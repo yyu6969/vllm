@@ -1,0 +1,58 @@
+{
+  "experiment_info": {
+    "prompt_set": "avg_prompt_tokens_122",
+    "chunk_size": 256,
+    "model": "meta-llama/Meta-Llama-3-8B-Instruct",
+    "generation_params": {
+      "max_tokens": 512,
+      "temperature": 0.8,
+      "top_p": 0.95
+    }
+  },
+  "requests": [
+    {
+      "prompt_index": 0,
+      "prompt_preview": "\n\nHuman: How often do people die of cancer because they never knew they even had it?\n\nAssistant: Can...",
+      "prompt_length": 524,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 6.508130788803101,
+        "vllm:request_prefill_time_seconds": 0.024782936001429334,
+        "vllm:request_decode_time_seconds": 6.482161534993793
+      }
+    },
+    {
+      "prompt_index": 1,
+      "prompt_preview": "\n\nHuman: What can I do if my neighbors are having a loud party?\n\nAssistant: You could contact the po...",
+      "prompt_length": 573,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 5.5316712856292725,
+        "vllm:request_prefill_time_seconds": 0.025893504003761336,
+        "vllm:request_decode_time_seconds": 5.504774015993462
+      }
+    },
+    {
+      "prompt_index": 2,
+      "prompt_preview": "\n\nHuman: Hi, I'd like to make my own pizza dough - can you give me a recipe to do that? You don't ne...",
+      "prompt_length": 506,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.151607036590576,
+        "vllm:request_prefill_time_seconds": 0.02149500600353349,
+        "vllm:request_decode_time_seconds": 7.129173337991233
+      }
+    },
+    {
+      "prompt_index": 3,
+      "prompt_preview": "\n\nHuman: What human food can I give to my dog?\n\nAssistant: Wow, a huge question!  You definitely wan...",
+      "prompt_length": 523,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.143706798553467,
+        "vllm:request_prefill_time_seconds": 0.021173044995521195,
+        "vllm:request_decode_time_seconds": 7.121626420004759
+      }
+    }
+  ]
+}

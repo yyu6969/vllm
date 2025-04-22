@@ -1,0 +1,58 @@
+{
+  "experiment_info": {
+    "prompt_set": "avg_prompt_tokens_265",
+    "chunk_size": 256,
+    "model": "meta-llama/Meta-Llama-3-8B-Instruct",
+    "generation_params": {
+      "max_tokens": 512,
+      "temperature": 0.8,
+      "top_p": 0.95
+    }
+  },
+  "requests": [
+    {
+      "prompt_index": 0,
+      "prompt_preview": "I have installed the Java 3D API on PC via the exe installer, which simply created a new directory w...",
+      "prompt_length": 1068,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.170639753341675,
+        "vllm:request_prefill_time_seconds": 0.04693510662764311,
+        "vllm:request_decode_time_seconds": 7.122292937710881
+      }
+    },
+    {
+      "prompt_index": 1,
+      "prompt_preview": "I have installed the Java 3D API on PC via the exe installer, which simply created a new directory w...",
+      "prompt_length": 1068,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.131349086761475,
+        "vllm:request_prefill_time_seconds": 0.015540503896772861,
+        "vllm:request_decode_time_seconds": 7.1145457392558455
+      }
+    },
+    {
+      "prompt_index": 2,
+      "prompt_preview": "I have installed the Java 3D API on PC via the exe installer, which simply created a new directory w...",
+      "prompt_length": 1068,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.1331353187561035,
+        "vllm:request_prefill_time_seconds": 0.015421679243445396,
+        "vllm:request_decode_time_seconds": 7.116851758211851
+      }
+    },
+    {
+      "prompt_index": 3,
+      "prompt_preview": "I have installed the Java 3D API on PC via the exe installer, which simply created a new directory w...",
+      "prompt_length": 1068,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.136693239212036,
+        "vllm:request_prefill_time_seconds": 0.01581518817692995,
+        "vllm:request_decode_time_seconds": 7.119968083687127
+      }
+    }
+  ]
+}

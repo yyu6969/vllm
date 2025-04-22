@@ -1,0 +1,58 @@
+{
+  "experiment_info": {
+    "prompt_set": "avg_prompt_tokens_122",
+    "chunk_size": 32,
+    "model": "meta-llama/Meta-Llama-3-8B-Instruct",
+    "generation_params": {
+      "max_tokens": 512,
+      "temperature": 0.8,
+      "top_p": 0.95
+    }
+  },
+  "requests": [
+    {
+      "prompt_index": 0,
+      "prompt_preview": "\n\nHuman: How often do people die of cancer because they never knew they even had it?\n\nAssistant: Can...",
+      "prompt_length": 524,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 3.862297296524048,
+        "vllm:request_prefill_time_seconds": 0.06973427720367908,
+        "vllm:request_decode_time_seconds": 3.7913803355768323
+      }
+    },
+    {
+      "prompt_index": 1,
+      "prompt_preview": "\n\nHuman: What can I do if my neighbors are having a loud party?\n\nAssistant: You could contact the po...",
+      "prompt_length": 573,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 1.3297433853149414,
+        "vllm:request_prefill_time_seconds": 0.08121772296726704,
+        "vllm:request_decode_time_seconds": 1.2474726028740406
+      }
+    },
+    {
+      "prompt_index": 2,
+      "prompt_preview": "\n\nHuman: Hi, I'd like to make my own pizza dough - can you give me a recipe to do that? You don't ne...",
+      "prompt_length": 506,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.187527656555176,
+        "vllm:request_prefill_time_seconds": 0.06623865943402052,
+        "vllm:request_decode_time_seconds": 7.120234261266887
+      }
+    },
+    {
+      "prompt_index": 3,
+      "prompt_preview": "\n\nHuman: What human food can I give to my dog?\n\nAssistant: Wow, a huge question!  You definitely wan...",
+      "prompt_length": 523,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.178758382797241,
+        "vllm:request_prefill_time_seconds": 0.0665069529786706,
+        "vllm:request_decode_time_seconds": 7.111371733248234
+      }
+    }
+  ]
+}

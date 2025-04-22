@@ -1,0 +1,58 @@
+{
+  "experiment_info": {
+    "prompt_set": "avg_prompt_tokens_1478",
+    "chunk_size": 128,
+    "model": "meta-llama/Meta-Llama-3-8B-Instruct",
+    "generation_params": {
+      "max_tokens": 512,
+      "temperature": 0.8,
+      "top_p": 0.95
+    }
+  },
+  "requests": [
+    {
+      "prompt_index": 0,
+      "prompt_preview": "I have published a successful app on play, but after upgrading the app when I sign and align the app...",
+      "prompt_length": 6514,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.533580541610718,
+        "vllm:request_prefill_time_seconds": 0.2675818372517824,
+        "vllm:request_decode_time_seconds": 7.264607320539653
+      }
+    },
+    {
+      "prompt_index": 1,
+      "prompt_preview": "I have two fragments within one fragment using ViewPager.\n\nSometimes my app crash with following err...",
+      "prompt_length": 6527,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 4.057589054107666,
+        "vllm:request_prefill_time_seconds": 0.23493085894733667,
+        "vllm:request_decode_time_seconds": 3.821500808931887
+      }
+    },
+    {
+      "prompt_index": 2,
+      "prompt_preview": "I am trying to upload images to DB using below code,\n\nMyJsp.jsp\n\n```\n<form action=\"ImageUploadToDB\" ...",
+      "prompt_length": 6536,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.49568510055542,
+        "vllm:request_prefill_time_seconds": 0.2518031531944871,
+        "vllm:request_decode_time_seconds": 7.242874941788614
+      }
+    },
+    {
+      "prompt_index": 3,
+      "prompt_preview": "I am trying to upload images to DB using below code,\n\nMyJsp.jsp\n\n```\n<form action=\"ImageUploadToDB\" ...",
+      "prompt_length": 6536,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.259172677993774,
+        "vllm:request_prefill_time_seconds": 0.015874474309384823,
+        "vllm:request_decode_time_seconds": 7.242106512188911
+      }
+    }
+  ]
+}

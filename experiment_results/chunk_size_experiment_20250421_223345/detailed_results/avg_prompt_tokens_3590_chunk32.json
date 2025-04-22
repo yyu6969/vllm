@@ -1,0 +1,58 @@
+{
+  "experiment_info": {
+    "prompt_set": "avg_prompt_tokens_3590",
+    "chunk_size": 32,
+    "model": "meta-llama/Meta-Llama-3-8B-Instruct",
+    "generation_params": {
+      "max_tokens": 512,
+      "temperature": 0.8,
+      "top_p": 0.95
+    }
+  },
+  "requests": [
+    {
+      "prompt_index": 0,
+      "prompt_preview": "I want to use UTC dates in my Node.js backend app, however, I need to be able to set time (hours and...",
+      "prompt_length": 11868,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.56928563117981,
+        "vllm:request_prefill_time_seconds": 2.1508900840126444,
+        "vllm:request_decode_time_seconds": 5.41668462799862
+      }
+    },
+    {
+      "prompt_index": 1,
+      "prompt_preview": "I want to use UTC dates in my Node.js backend app, however, I need to be able to set time (hours and...",
+      "prompt_length": 11868,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 1.0493981838226318,
+        "vllm:request_prefill_time_seconds": 0.02012540500436444,
+        "vllm:request_decode_time_seconds": 1.0280387270031497
+      }
+    },
+    {
+      "prompt_index": 2,
+      "prompt_preview": "I am trying to instantiate the [StdRandom](http://algs4.cs.princeton.edu/stdlib/StdRandom.java.html)...",
+      "prompt_length": 11762,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 6.63354754447937,
+        "vllm:request_prefill_time_seconds": 1.625950653993641,
+        "vllm:request_decode_time_seconds": 5.006639650004217
+      }
+    },
+    {
+      "prompt_index": 3,
+      "prompt_preview": "I am trying to instantiate the [StdRandom](http://algs4.cs.princeton.edu/stdlib/StdRandom.java.html)...",
+      "prompt_length": 11762,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.390258312225342,
+        "vllm:request_prefill_time_seconds": 0.018876528993132524,
+        "vllm:request_decode_time_seconds": 7.370265681005549
+      }
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "experiment_info": {
+    "prompt_set": "avg_prompt_tokens_3590",
+    "chunk_size": 1024,
+    "model": "meta-llama/Meta-Llama-3-8B-Instruct",
+    "generation_params": {
+      "max_tokens": 512,
+      "temperature": 0.8,
+      "top_p": 0.95
+    }
+  },
+  "requests": [
+    {
+      "prompt_index": 0,
+      "prompt_preview": "I want to use UTC dates in my Node.js backend app, however, I need to be able to set time (hours and...",
+      "prompt_length": 11868,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 1.6747612953186035,
+        "vllm:request_prefill_time_seconds": 0.3230971640005009,
+        "vllm:request_decode_time_seconds": 1.3502751430060016
+      }
+    },
+    {
+      "prompt_index": 1,
+      "prompt_preview": "I want to use UTC dates in my Node.js backend app, however, I need to be able to set time (hours and...",
+      "prompt_length": 11868,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 6.719852924346924,
+        "vllm:request_prefill_time_seconds": 0.01995192100002896,
+        "vllm:request_decode_time_seconds": 6.698776810007985
+      }
+    },
+    {
+      "prompt_index": 2,
+      "prompt_preview": "I am trying to instantiate the [StdRandom](http://algs4.cs.princeton.edu/stdlib/StdRandom.java.html)...",
+      "prompt_length": 11762,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.037108659744263,
+        "vllm:request_prefill_time_seconds": 0.265421239004354,
+        "vllm:request_decode_time_seconds": 6.770487015994149
+      }
+    },
+    {
+      "prompt_index": 3,
+      "prompt_preview": "I am trying to instantiate the [StdRandom](http://algs4.cs.princeton.edu/stdlib/StdRandom.java.html)...",
+      "prompt_length": 11762,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.406692028045654,
+        "vllm:request_prefill_time_seconds": 0.01929178601130843,
+        "vllm:request_decode_time_seconds": 7.385995224001817
+      }
+    }
+  ]
+}
