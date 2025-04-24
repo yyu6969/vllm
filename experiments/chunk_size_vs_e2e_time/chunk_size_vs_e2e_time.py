@@ -1,401 +1,646 @@
-# SPDX-License-Identifier: Apache-2.0
-
-from vllm import LLM, SamplingParams
-import torch
-import json
+import subprocess
 import time
-import os
-import csv
-import datetime
-import wandb
 import requests
 import re
-import numpy as np
+import signal
+import os
+import statistics
+import json
+import openai
+import threading
+import queue
 import pandas as pd
-import matplotlib.pyplot as plt
-from types import MethodType
-from typing import List, Dict, Optional, Union, Any
+from datetime import datetime
 
-def load_prompts(path: str) -> List[str]:
+import sys
+sys.path.append('/work/nvme/bdkz/yyu69/vllm')
+from experiments.utiles.load_prompts import load_prompts_from_csv, load_prompts_from_json
+from experiments.utiles.plot_e2e_time import plot_e2e_time_chart_from_json
+
+# --- 1. Define Parameters ---
+MODEL_NAMES = ["Qwen/Qwen2.5-3B-Instruct"]
+SERVER_HOST = "127.0.0.1"
+SERVER_PORT = 8000
+SERVER_URL = f"http://{SERVER_HOST}:{SERVER_PORT}"
+METRICS_URL = f"{SERVER_URL}/metrics"
+HEALTH_CHECK_URL = f"{SERVER_URL}/health"
+
+# Your different sets of prompts with different token lengths
+PROMPT_CONFIGS = [
+    {
+        "path": "/work/nvme/bdkz/yyu69/vllm/data/long-prompts-6000_6500_100.csv",
+        "column_name": "prompt",
+        "chunk_sizes": [16, 32, 64, 128, 256, 512, 1024, 2048]
+    },
+]
+
+GENERATION_PARAMS = {"max_tokens": 512, "temperature": 0.8, "top_p": 0.95}
+
+# Exact names of the metrics you want to average
+TARGET_METRIC_NAMES = [
+    "vllm:e2e_request_latency_seconds",
+    "vllm:request_prefill_time_seconds",
+    "vllm:request_decode_time_seconds",
+    "vllm:request_inference_time_seconds",
+]
+
+OUTPUT_DIR = "/work/nvme/bdkz/yyu69/vllm/experiment_results/chunk_size_vs_e2e_time_experiments"
+
+BATCH_SIZE = 8
+NUM_RUNS_PER_BATCH = 3
+
+# Generate a timestamp for the filename - creating this at the start
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+# Create main results directory right away
+results_dir = f"{OUTPUT_DIR}/chunk_size_vs_e2e_time_experiment_{timestamp}"
+os.makedirs(results_dir, exist_ok=True)
+
+# --- 2. Initialize Results Storage ---
+server_process = None # Keep track of the server process
+
+def log_reader(process, log_queue):
+    """Read logs from process and put them in queue."""
+    for line in iter(process.stdout.readline, ''):
+        log_queue.put(line.strip())
+    log_queue.put(None)  # Signal end of stream
+
+def start_vllm_server(model_name, chunk_size):
+    command = [
+        "python", "-m", "vllm.entrypoints.openai.api_server",
+        "--model", model_name,
+        "--host", SERVER_HOST,
+        "--port", str(SERVER_PORT),
+        "--enable-chunked-prefill",
+        "--max-num-batched-tokens", str(chunk_size),
+        "--max-num-seqs", str(8)
+    ]
+    print(f"Starting server with command: {' '.join(command)}")
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, universal_newlines=True, preexec_fn=os.setsid)
+    return process
+
+def wait_for_server_ready(process, readiness_url, timeout=300):
+    """Wait for the server to be ready using both logs and HTTP polling."""
+    print(f"Waiting for server to be ready at {readiness_url}...")
+    start_time = time.time()
+    log_queue = queue.Queue()
+    
+    # Start log reader thread
+    log_thread = threading.Thread(target=log_reader, args=(process, log_queue))
+    log_thread.daemon = True
+    log_thread.start()
+    
+    # Check for both log indicator and HTTP readiness
+    log_ready_indicators = [
+        "Uvicorn running on",
+        "Starting vLLM API server on",
+        "Application startup complete"
+    ]
+    
+    server_ready = False
+    while time.time() - start_time < timeout:
+        # Check if process is still running
+        if process.poll() is not None:
+            print(f"Server process terminated unexpectedly with code {process.poll()}.")
+            return False
+        
+        # Check logs (non-blocking)
+        try:
+            while not log_queue.empty():
+                line = log_queue.get_nowait()
+                if line is None:  # End of stream
+                    break
+                print(f"Server log: {line}")
+                for indicator in log_ready_indicators:
+                    if indicator in line:
+                        print(f"Server ready indicator found in logs: '{indicator}'")
+                        # Found indicator in logs, but give some extra time for server to be fully ready
+                        time.sleep(3)
+                        server_ready = True
+        except queue.Empty:
+            pass
+        
+        # Check HTTP endpoint
+        try:
+            response = requests.get(readiness_url, timeout=5)
+            if response.status_code == 200:
+                print(f"Server responded OK at {readiness_url}.")
+                return True
+        except requests.ConnectionError:
+            if server_ready:
+                print(f"Server logs indicated ready, but HTTP endpoint not responding yet. Retrying...")
+            pass
+        except requests.Timeout:
+            print(f"Timeout polling {readiness_url}, retrying...")
+        except Exception as e:
+            print(f"Error polling {readiness_url}: {e}")
+        
+        time.sleep(3)
+
+    print("Server failed to become ready within timeout.")
+    return False
+
+def scrape_and_parse_metrics(metric_names):
+    print("Scraping metrics...")
+    metrics_data = {}
     try:
-        with open(path, "r") as f:
-            prompts_data = json.load(f)
-            return prompts_data
-    except FileNotFoundError:
-        raise FileNotFoundError(f"Prompts file {path} not found. Please create the file first.")
+        response = requests.get(METRICS_URL, timeout=10)
+        response.raise_for_status()
+        metrics_text = response.text
 
-def load_prompts_from_csv(path: str, column_name: str = "question") -> List[str]:
+        for name in metric_names:
+            # Regex to find sum and count, ignoring labels for simplicity here
+            # It captures the numeric value after the whitespace
+            sum_match = re.search(rf"^{re.escape(name)}_sum(?:{{.*?}})?\s+([\d\.eE+-]+)", metrics_text, re.MULTILINE)
+            count_match = re.search(rf"^{re.escape(name)}_count(?:{{.*?}})?\s+([\d\.eE+-]+)", metrics_text, re.MULTILINE)
+
+            if sum_match and count_match:
+                metrics_data[name] = {
+                    "sum": float(sum_match.group(1)),
+                    "count": float(count_match.group(1))
+                }
+            else:
+                 print(f"Warning: Metric {name} (or sum/count) not found in output.")
+                 metrics_data[name] = {"sum": 0.0, "count": 0.0} # Default
+
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to scrape metrics: {e}")
+        for name in metric_names:
+             metrics_data[name] = {"sum": 0.0, "count": 0.0}
+    return metrics_data
+
+def shutdown_server(process):
+     if process and process.poll() is None: # Check if process exists and is running
+        print("Shutting down server...")
+        pgid = -1
+        try:
+            # Get the process group ID
+            pgid = os.getpgid(process.pid)
+            print(f"Sending SIGINT to process group {pgid} (process {process.pid})...")
+            os.killpg(pgid, signal.SIGINT)
+            process.wait(timeout=30) # Wait for graceful shutdown
+            print("Server shut down via SIGINT.")
+            return # Success
+        except ProcessLookupError:
+             print("Server process group already gone.")
+             if process.poll() is None: process.wait(timeout=5) # Try waiting for main process just in case
+             return
+        except subprocess.TimeoutExpired:
+            print("Server did not shut down gracefully via SIGINT, sending SIGTERM...")
+        except Exception as e:
+             print(f"Error sending SIGINT or waiting: {e}")
+
+        # If SIGINT failed or timed out, try SIGTERM
+        try:
+             if pgid != -1 and process.poll() is None: # Check process is still running
+                 print(f"Sending SIGTERM to process group {pgid}...")
+                 os.killpg(pgid, signal.SIGTERM)
+                 process.wait(timeout=15)
+                 print("Server shut down via SIGTERM.")
+                 return # Success
+        except ProcessLookupError:
+             print("Server process group already gone.")
+             if process.poll() is None: process.wait(timeout=5)
+             return
+        except subprocess.TimeoutExpired:
+             print("Server did not respond to SIGTERM, sending SIGKILL...")
+        except Exception as e:
+             print(f"Error sending SIGTERM or waiting: {e}")
+
+        # If SIGTERM failed or timed out, try SIGKILL
+        try:
+            if pgid != -1 and process.poll() is None: # Check process is still running
+                 print(f"Sending SIGKILL to process group {pgid}...")
+                 os.killpg(pgid, signal.SIGKILL)
+                 process.wait(timeout=5)
+                 print("Server shut down via SIGKILL.")
+            elif process.poll() is None: # If pgid failed, try killing main pid directly (last resort)
+                 print(f"Sending SIGKILL to process {process.pid}...")
+                 process.kill()
+                 process.wait(timeout=5)
+                 print("Server shut down via SIGKILL (PID).")
+
+        except ProcessLookupError:
+             print("Server process group/PID already gone.")
+        except Exception as e:
+             print(f"Failed during SIGKILL attempt: {e}")
+
+        if process.poll() is None:
+             print("WARNING: Server process may still be running!")
+
+def send_single_request(prompts, model_name, generation_params):
     """
-    Load prompts from a CSV file using the specified column.
+    Send a single batch request to the vLLM OpenAI API server.
     
     Args:
-        path: Path to the CSV file containing prompts
-        column_name: Name of the column containing the prompts (default: "question")
+        prompts: List of text prompts to send (for batch processing)
+        model_name: The model to use
+        generation_params: Dictionary of generation parameters
         
     Returns:
-        List of prompt strings
+        dict: Results including success status, response info, and output token counts
     """
-    try:
-        # Read the CSV file
-        prompts = []
-        column_index = None
-        
-        with open(path, 'r', encoding='utf-8') as csvfile:
-            reader = csv.reader(csvfile)
-            
-            # Get headers
-            headers = next(reader)
-            
-            # Find column index
-            try:
-                column_index = headers.index(column_name)
-            except ValueError:
-                available_columns = ", ".join(headers)
-                raise ValueError(f"Column '{column_name}' not found in CSV. Available columns: {available_columns}")
-            
-            # Extract prompts from the specified column
-            for row in reader:
-                if len(row) > column_index and row[column_index].strip():
-                    prompts.append(row[column_index])
-                    
-                # Limit to first 8 prompts
-                if len(prompts) >= 1:
-                    break
-        
-        print(f"Loaded {len(prompts)} prompts from {path}")
-        return prompts
-        
-    except FileNotFoundError:
-        raise FileNotFoundError(f"CSV file {path} not found. Please create the file first.")
-    except Exception as e:
-        raise Exception(f"Error loading prompts from CSV: {str(e)}")
-
-def get_prometheus_metric_value(metric_name: str, model_name: str, metrics_url: str = "http://localhost:8000/metrics") -> float:
-    try:
-        response = requests.get(metrics_url)
-        response.raise_for_status()
-        text = response.text
-
-        pattern = rf'{re.escape(metric_name)}{{[^}}]*model_name="{re.escape(model_name)}"[^}}]*}} ([0-9.]+)'
-        match = re.search(pattern, text)
-        if match:
-            return float(match.group(1))
-        else:
-            print(f"[WARN] Could not extract {metric_name}")
-            return None
-    except Exception as e:
-        print(f"[ERROR] Failed to fetch metrics: {e}")
-        return None
-
-def run_inference_with_chunk_size(chunk_size, prompts, sampling_params, model_name):
-    print(f"Initializing LLM with chunk_size={chunk_size}")
+    print(f"Sending batch request with {len(prompts)} prompts")
     
-    # Create LLM with specified chunk size
-    llm = LLM(
-        model=model_name,
-        enable_chunked_prefill=True,
-        max_num_batched_tokens=chunk_size,
-        max_num_seqs=chunk_size
+    # Create OpenAI client
+    client = openai.OpenAI(
+        base_url=f"{SERVER_URL}/v1",
+        api_key="EMPTY"
     )
-
-    e2e_times = []
-    prefill_times = []
-    decode_times = []
-    prompt_tokens = []
-    completion_tokens = []
-
-    for i, prompt in enumerate(prompts):
-        # Capture pre-inference metrics
-        e2e_sum_before = get_prometheus_metric_value("vllm:e2e_request_latency_seconds_sum", model_name)
-        prefill_sum_before = get_prometheus_metric_value("vllm:request_prefill_time_seconds_sum", model_name)
-        decode_sum_before = get_prometheus_metric_value("vllm:request_decode_time_seconds_sum", model_name)
-
-        # Run inference
-        output = llm.generate([prompt], sampling_params)[0]
-
-        # Capture post-inference metrics
-        e2e_sum_after = get_prometheus_metric_value("vllm:e2e_request_latency_seconds_sum", model_name)
-        prefill_sum_after = get_prometheus_metric_value("vllm:request_prefill_time_seconds_sum", model_name)
-        decode_sum_after = get_prometheus_metric_value("vllm:request_decode_time_seconds_sum", model_name)
-
-        # Compute timing deltas
-        e2e_time = (e2e_sum_after - e2e_sum_before) if e2e_sum_before is not None and e2e_sum_after is not None else None
-        prefill_time = (prefill_sum_after - prefill_sum_before) if prefill_sum_before is not None and prefill_sum_after is not None else None
-        decode_time = (decode_sum_after - decode_sum_before) if decode_sum_before is not None and decode_sum_after is not None else None
-
-        if e2e_time is None:
-            print(f"[ERROR] Failed to extract E2E time from metrics for prompt {i}")
-            continue
-
-        # Tokens
-        prompt_token_count = len(output.prompt_token_ids)
-        completion_token_count = len(output.outputs[0].token_ids)
-        generated_text = output.outputs[0].text
-
-        e2e_times.append(e2e_time)
-        prefill_times.append(prefill_time)
-        decode_times.append(decode_time)
-        prompt_tokens.append(prompt_token_count)
-        completion_tokens.append(completion_token_count)
-
-        print(f"Prompt {i}: {prompt_token_count} tokens -> {completion_token_count} generated, E2E: {e2e_time:.3f}s")
-
-    # Averages
-    avg_e2e_time = sum(e2e_times) / len(e2e_times)
-    avg_prefill_time = sum(prefill_times) / len(prefill_times)
-    avg_decode_time = sum(decode_times) / len(decode_times)
-    avg_prompt_tokens = sum(prompt_tokens) / len(prompt_tokens)
-    avg_completion_tokens = sum(completion_tokens) / len(completion_tokens)
-
-    total_tokens = sum(prompt_tokens) + sum(completion_tokens)
-    total_time = sum(e2e_times)
-    avg_token_per_sec = total_tokens / total_time if total_time > 0 else 0
-
-    return {
-        "chunk_size": chunk_size,
-        "avg_e2e_time": avg_e2e_time,
-        "avg_prefill_time": avg_prefill_time,
-        "avg_decode_time": avg_decode_time,
-        "avg_prompt_tokens": avg_prompt_tokens,
-        "avg_completion_tokens": avg_completion_tokens,
-        "avg_token_per_sec": avg_token_per_sec,
-        "e2e_times": e2e_times,
-        "prefill_times": prefill_times,
-        "decode_times": decode_times,
-        "prompt_tokens": prompt_tokens,
-        "completion_tokens": completion_tokens
+    
+    result = {
+        "success": False,
+        "response_text": None,
+        "error": None,
+        "output_token_counts": []  # To store counts of generated tokens
     }
-
-def plot_combined_results(all_results: List[List[Dict]], output_dir: str, timestamp: str = None):
-    # Create timestamp if not provided
-    if timestamp is None:
-        timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     
-    results_dir = f"{output_dir}/chunk_size_experiment_{timestamp}"
-    os.makedirs(results_dir, exist_ok=True)
-    
-    # Plot combined e2e time chart
-    plt.figure(figsize=(12, 8))
-    
-    # Colors and markers for different prompts
-    styles = [
-        {'color': 'blue', 'marker': 'o', 'label': 'Prompt 1'},
-        {'color': 'green', 'marker': 's', 'label': 'Prompt 2'},
-        {'color': 'red', 'marker': '^', 'label': 'Prompt 3'}
-    ]
-    
-    # Get all unique chunk sizes and create evenly spaced x positions
-    all_chunk_sizes = sorted(list(set([
-        size for results in all_results 
-        for result in results 
-        for size in [result["chunk_size"]]
-    ])))
-    
-    # Create evenly spaced x positions for plotting
-    x_positions = np.arange(len(all_chunk_sizes))
-    
-    # Create mapping from chunk size to x position
-    chunk_size_to_pos = {size: pos for pos, size in zip(x_positions, all_chunk_sizes)}
-    
-    # Plot each prompt's results
-    for idx, results in enumerate(all_results):
-        chunk_sizes = [result["chunk_size"] for result in results]
-        avg_e2e_times = [result["avg_e2e_time"] for result in results]
-        avg_prompt_tokens = results[0]["avg_prompt_tokens"]
-        
-        # Sort by chunk size
-        sorted_indices = np.argsort(chunk_sizes)
-        sorted_chunk_sizes = [chunk_sizes[i] for i in sorted_indices]
-        sorted_e2e_times = [avg_e2e_times[i] for i in sorted_indices]
-        
-        # Convert chunk sizes to x positions
-        x_vals = [chunk_size_to_pos[size] for size in sorted_chunk_sizes]
-        
-        # Plot with different style for each prompt
-        plt.plot(x_vals, sorted_e2e_times, 
-                marker=styles[idx]['marker'], 
-                color=styles[idx]['color'],
-                linestyle='-',
-                linewidth=2,
-                markersize=8,
-                label=f'{styles[idx]["label"]} (avg {avg_prompt_tokens:.1f} tokens)')
-        
-        # Add value annotations
-        for x, y, chunk_size in zip(x_vals, sorted_e2e_times, sorted_chunk_sizes):
-            plt.annotate(f"{y:.2f}s", 
-                        (x, y),
-                        textcoords="offset points",
-                        xytext=(0, 10),
-                        ha='center',
-                        color=styles[idx]['color'],
-                        fontsize=8)
-    
-    # Set x-axis ticks to show all chunk sizes
-    plt.xticks(x_positions, all_chunk_sizes, rotation=45)
-    
-    plt.xlabel('Chunk Size')
-    plt.ylabel('E2E Time (s)')
-    plt.title('Chunk Size vs Request End-to-End Time\nComparison of Different Prompt Lengths (llama-3-8b)')
-    plt.grid(True)
-    plt.legend(loc='upper left', bbox_to_anchor=(1.02, 1.0))
-    
-    # Adjust layout to prevent label cutoff
-    plt.tight_layout()
-    
-    # Save plot
-    e2e_plot_path = f"{results_dir}/combined_chunk_size_vs_e2e_time.png"
-    plt.savefig(e2e_plot_path, dpi=300, bbox_inches='tight')
-    print(f"Combined E2E time plot saved to {e2e_plot_path}")
-    
-    plt.close()
-    
-    # Save detailed timing results as CSV
-    detailed_results = []
-    for prompt_idx, results in enumerate(all_results):
-        for result in results:
-            chunk_size = result["chunk_size"]
-            for i in range(len(result["e2e_times"])):
-                detailed_results.append({
-                    "prompt_idx": prompt_idx + 1,
-                    "chunk_size": chunk_size,
-                    "e2e_time": result["e2e_times"][i],
-                    "prefill_time": result["prefill_times"][i],
-                    "decode_time": result["decode_times"][i],
-                    "prompt_tokens": result["prompt_tokens"][i] if i < len(result["prompt_tokens"]) else None,
-                })
-    
-    # Save detailed results
-    detailed_df = pd.DataFrame(detailed_results)
-    detailed_csv_path = f"{results_dir}/detailed_timing_metrics.csv"
-    detailed_df.to_csv(detailed_csv_path, index=False)
-    print(f"Detailed timing metrics saved to {detailed_csv_path}")
-    
-    # Create summary table with averages
-    summary_results = []
-    for prompt_idx, results in enumerate(all_results):
-        for result in results:
-            summary_results.append({
-                "prompt_idx": prompt_idx + 1,
-                "chunk_size": result["chunk_size"],
-                "avg_prompt_tokens": result["avg_prompt_tokens"],
-                "avg_e2e_time": result["avg_e2e_time"],
-                "avg_prefill_time": result["avg_prefill_time"],
-                "avg_decode_time": result["avg_decode_time"],
-                "avg_token_per_sec": result["avg_token_per_sec"],
-            })
-    
-    # Save summary results
-    summary_df = pd.DataFrame(summary_results)
-    summary_csv_path = f"{results_dir}/timing_summary.csv"
-    summary_df.to_csv(summary_csv_path, index=False)
-    print(f"Timing summary saved to {summary_csv_path}")
-    
-    # Create an additional plot for prefill and decode times
-    plt.figure(figsize=(12, 8))
-    
-    # For each chunk size, plot e2e, prefill, and decode times as stacked bar chart
-    chunk_sizes = sorted(list(set([result["chunk_size"] for results in all_results for result in results])))
-    x = np.arange(len(chunk_sizes))
-    width = 0.25
-    
-    # Get averages for each chunk size
-    chunk_size_avg = {}
-    for chunk_size in chunk_sizes:
-        chunk_results = [r for results in all_results for r in results if r["chunk_size"] == chunk_size]
-        chunk_size_avg[chunk_size] = {
-            "prefill": sum(r["avg_prefill_time"] for r in chunk_results) / len(chunk_results),
-            "decode": sum(r["avg_decode_time"] for r in chunk_results) / len(chunk_results)
-        }
-    
-    # Plot prefill times
-    prefill_times = [chunk_size_avg[cs]["prefill"] for cs in chunk_sizes]
-    decode_times = [chunk_size_avg[cs]["decode"] for cs in chunk_sizes]
-    
-    plt.bar(x, prefill_times, width, label='Prefill Time')
-    plt.bar(x, decode_times, width, bottom=prefill_times, label='Decode Time')
-    
-    plt.xlabel('Chunk Size')
-    plt.ylabel('Time (s)')
-    plt.title('Prefill and Decode Times by Chunk Size')
-    plt.xticks(x, chunk_sizes)
-    plt.legend()
-    
-    # Save timing breakdown plot
-    timing_plot_path = f"{results_dir}/prefill_decode_time_breakdown.png"
-    plt.savefig(timing_plot_path, dpi=300, bbox_inches='tight')
-    print(f"Timing breakdown plot saved to {timing_plot_path}")
-    
-    plt.close()
-
-def main():
-    # Create timestamp for the experiment
-    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    
-    # Initialize wandb with a dummy project if you don't want to use wandb directly
-    wandb_run = wandb.init(
-        project=args.wandb_project,
-        group=args.wandb_group,
-        name=f"chunk_size_experiment_{timestamp}",
-        config={
-            "model": args.model,
-            "output_dir": args.output_dir,
-            "experiment_timestamp": timestamp,
-            "experiment_name": args.experiment_name,
-        }
-    )
-    
-    print(f"Starting experiment at {timestamp}")
-    
-    sampling_params = SamplingParams(temperature=0.8, top_p=0.95, max_tokens=512)
-    
-    # Print experiment configuration
-    print("\nExperiment Configuration:")
-    print(f"Model: {args.model}")
-    print(f"Output directory: {args.output_dir}")
-    print(f"Sampling parameters: temperature={sampling_params.temperature}, top_p={sampling_params.top_p}, max_tokens={sampling_params.max_tokens}\n")
-    
-    # Define chunk sizes and prompt paths
-    prompt_configs = [
-        {
-            "path": "/work/nvme/bdkz/yyu69/vllm/data/long-questions-1.csv",
-            "chunk_sizes": [16, 32, 64]
-        },
-    ]
-    
-    all_results = []
-    
-    # Run experiments for each prompt file with its corresponding chunk sizes
-    for config in prompt_configs:
-        results = []
-        prompts = load_prompts_from_csv(config["path"])
-        
-        print(f"\nRunning inference for prompts from {config['path']}")
-        for chunk_size in config["chunk_sizes"]:
-            print(f"\nRunning with chunk_size = {chunk_size}")
-            result = run_inference_with_chunk_size(
-                chunk_size=chunk_size,
-                prompts=prompts,
-                sampling_params=sampling_params,
-                model_name=args.model
+    try:
+        # OpenAI client might not support arrays of prompts directly
+        # Check if we need to handle multiple prompts differently
+        if isinstance(prompts, list) and len(prompts) > 1:
+            # For batch processing, we might need to handle differently based on API
+            # Check OpenAI client documentation for batch processing
+            response = client.completions.create(
+                model=model_name,
+                prompt=prompts,  # Try sending as batch
+                **generation_params
             )
-            results.append(result)
+        else:
+            # Single prompt case
+            response = client.completions.create(
+                model=model_name,
+                prompt=prompts[0] if isinstance(prompts, list) else prompts,
+                **generation_params
+            )
         
-        all_results.append(results)
+        # Extract response
+        result["success"] = True
+        
+        # Store response text(s) and count tokens
+        responses = []
+        
+        if hasattr(response.choices[0], 'text'):
+            # For single completions
+            text = response.choices[0].text.strip()
+            result["response_text"] = text
+            # Count tokens in the output
+            output_tokens = count_tokens(model_name, text)
+            result["output_token_counts"] = [output_tokens]
+            
+            # Print a preview of the response
+            preview = text[:150] + "..." if len(text) > 150 else text
+            print(f"Response preview: {preview}")
+            print(f"Output tokens: {output_tokens}")
+            
+        else:
+            # For multiple completions in a batch
+            responses = [choice.text.strip() for choice in response.choices]
+            result["response_text"] = responses
+            
+            # Count tokens for each response
+            for text in responses:
+                output_tokens = count_tokens(model_name, text)
+                result["output_token_counts"].append(output_tokens)
+            
+            # Print preview of the first few responses
+            print("Response previews:")
+            for i, text in enumerate(responses[:3]):  # First 3 responses
+                preview = text[:150] + "..." if len(text) > 150 else text
+                print(f"  Response {i+1}: {preview}")
+                print(f"  Output tokens: {result['output_token_counts'][i]}")
+            
+            if len(responses) > 3:
+                print(f"  ... and {len(responses)-3} more responses")
+            
+            # Print total tokens
+            total_output_tokens = sum(result["output_token_counts"])
+            print(f"Total output tokens: {total_output_tokens}")
+        
+        print(f"Request successful")
+        
+    except Exception as e:
+        print(f"Request failed: {e}")
+        result["error"] = str(e)
     
-    # Plot combined results
-    plot_combined_results(all_results, args.output_dir, timestamp)
-    
-    # Finish the wandb run
-    wandb.finish()
+    return result
 
-if __name__ == "__main__":
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--output-dir", type=str, default="/work/nvme/bdkz/yyu69/vllm/experiment_results", help="Directory to save experiment results and plots")
-    parser.add_argument("--model", type=str, default="meta-llama/Meta-Llama-3-8B-Instruct", help="Model to use for inference")
-    parser.add_argument("--experiment-name", type=str, default="", help="Optional name for the experiment (will be included in output directory)")
-    parser.add_argument("--wandb-project", type=str, default="sarathi-chunk-size-experiment", help="Weights & Biases project name")
-    parser.add_argument("--wandb-group", type=str, default="chunk-size-vs-e2e-time", help="Weights & Biases group name")
-    args = parser.parse_args()
+def count_tokens(model_name, text):
+    """Count tokens in the given text using the model's tokenizer."""
+    from transformers import AutoTokenizer
     
-    main()
+    # Initialize tokenizer only once for efficiency (using global variable)
+    global tokenizer
+    if 'tokenizer' not in globals():
+        print("Initializing tokenizer...")
+        # Use a default model for tokenization - doesn't need to be precise for our measurements
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+    
+    return len(tokenizer.encode(text))
+
+# --- Main Execution Logic ---
+try:
+    # Process each model
+    for model_name in MODEL_NAMES:
+        print(f"\n{'='*15} Testing model {model_name} {'='*15}")
+        
+        # Extract just the model name without organization prefix for directory naming
+        model_short_name = model_name.split('/')[-1] if '/' in model_name else model_name
+        
+        # Create model-specific directory using short name
+        model_dir = os.path.join(results_dir, model_short_name)
+        os.makedirs(model_dir, exist_ok=True)
+        
+        # Create a directory for detailed results for this model
+        model_detailed_dir = os.path.join(model_dir, "detailed_results")
+        os.makedirs(model_detailed_dir, exist_ok=True)
+        
+        # Initialize results dictionary for this model
+        final_results = {}
+        
+        # Process each prompt configuration
+        for config in PROMPT_CONFIGS:
+            # Load prompts from the specified path
+            all_prompts = load_prompts_from_csv(config["path"], column_name=config["column_name"])
+
+            # Make sure we have enough unique prompts for all runs
+            required_prompts = BATCH_SIZE * NUM_RUNS_PER_BATCH
+            if len(all_prompts) < required_prompts:
+                print(f"WARNING: Not enough prompts for {NUM_RUNS_PER_BATCH} runs with batch size {BATCH_SIZE}.")
+                print(f"Need {required_prompts} prompts, but only have {len(all_prompts)}.")
+                print("Will repeat prompts which may cause caching effects.")
+                # Extend the prompts list by repeating if needed
+                while len(all_prompts) < required_prompts:
+                    all_prompts.extend(all_prompts[:required_prompts - len(all_prompts)])
+            
+            # Calculate actual average token count for all batches
+            if len(all_prompts) > 0:
+                total_tokens = sum(count_tokens(model_name, prompt) for prompt in all_prompts[:required_prompts])
+                avg_tokens = int(total_tokens / required_prompts)
+                prompt_set_key = f"avg_prompt_tokens_{avg_tokens}"
+            else:
+                prompt_set_key = "unknown_tokens"
+            
+            print(f"\n{'='*15} Testing prompt set {prompt_set_key} {'='*15}")
+            
+            # Initialize results for this prompt set
+            if prompt_set_key not in final_results:
+                final_results[prompt_set_key] = {}
+            
+            # Test each chunk size specified for this prompt set
+            for chunk_size in config["chunk_sizes"]:
+                print(f"\n{'-'*15} Testing chunk_size = {chunk_size} with {prompt_set_key} {'-'*15}")
+                
+                # 1. Check if any server running
+                if server_process and server_process.poll() is None:
+                    print("Existing server found. Shutting it down first...")
+                    shutdown_server(server_process)
+                    server_process = None
+                    time.sleep(5)  # Give time for resources to be released
+                
+                # 2. Start the server with chunk_size
+                server_process = start_vllm_server(model_name, chunk_size)
+                
+                # 3. Check if server started and became ready
+                if not wait_for_server_ready(server_process, HEALTH_CHECK_URL):
+                    print(f"ERROR: Server failed to start or become ready for chunk size {chunk_size}.")
+                    shutdown_server(server_process)
+                    server_process = None
+                    final_results[prompt_set_key][f"chunk_size_{chunk_size}"] = {'status': 'failed_startup'}
+                    time.sleep(5)
+                    continue  # Skip to next chunk size
+                
+                # 4. Check if metrics are all zero (initial state)
+                initial_metrics = scrape_and_parse_metrics(TARGET_METRIC_NAMES)
+                metrics_zeroed = True
+                for name in TARGET_METRIC_NAMES:
+                    if initial_metrics.get(name, {}).get("sum", 0.0) > 0 or initial_metrics.get(name, {}).get("count", 0.0) > 0:
+                        metrics_zeroed = False
+                        break
+                
+                if not metrics_zeroed:
+                    print("WARNING: Initial metrics are not zero. Server may have residual data.")
+                
+                # Add single warm-up run before starting measurements
+                print(f"\n{'-'*10} Performing GPU warm-up {'-'*10}")
+                # Use the first batch of prompts for warm-up
+                warmup_prompts = all_prompts[:BATCH_SIZE]
+                print(f"Using first {len(warmup_prompts)} prompts for warm-up")
+
+                # Single warm-up run to initialize GPU and compile any needed kernels
+                print("Executing warm-up run...")
+                warm_up_result = send_single_request(warmup_prompts, model_name, GENERATION_PARAMS)
+                if not warm_up_result["success"]:
+                    print(f"WARNING: Warm-up request failed: {warm_up_result.get('error', 'Unknown error')}")
+                else:
+                    print("Warm-up request completed successfully")
+
+                # Allow system to stabilize after warm-up
+                print("Waiting for system to stabilize...")
+                time.sleep(5)  
+
+                # Get clean baseline metrics AFTER warm-up
+                print("Getting clean baseline metrics after warm-up...")
+                baseline_metrics = scrape_and_parse_metrics(TARGET_METRIC_NAMES)
+
+                print(f"{'-'*10} Warm-up complete, starting actual measurements {'-'*10}")
+
+                # Adjust the starting index for actual runs to skip warm-up prompts
+                # Start using prompts after the first BATCH_SIZE used for warm-up
+                warmup_offset = BATCH_SIZE
+
+                # Initialize results for this chunk size
+                all_e2e_times = []
+                all_prefill_times = []
+                all_decode_times = []
+                all_inference_times = []
+                all_tbts = []
+                successful_requests = 0
+                
+                # Store detailed info for each request
+                all_request_details = []
+                
+                # Use baseline_metrics as pre_metrics for the first run
+                prev_metrics = baseline_metrics
+
+                for run_idx in range(NUM_RUNS_PER_BATCH):
+                    # Calculate indices with offset to skip warm-up prompts
+                    start_idx = warmup_offset + (run_idx * BATCH_SIZE)
+                    end_idx = start_idx + BATCH_SIZE
+                    batch_prompts = all_prompts[start_idx:end_idx]
+                    
+                    print(f"\n{'-'*10} Run {run_idx+1}/{NUM_RUNS_PER_BATCH} with batch of {len(batch_prompts)} NEW prompts {'-'*10}")
+                    
+                    # Use previous metrics as pre-request metrics
+                    pre_metrics = prev_metrics
+                    
+                    # Send request using the dedicated function
+                    request_result = send_single_request(batch_prompts, model_name, GENERATION_PARAMS)
+                    
+                    # Allow metrics to update
+                    time.sleep(2)
+                    
+                    # 6. Get current metrics and calculate times
+                    post_metrics = scrape_and_parse_metrics(TARGET_METRIC_NAMES)
+                    
+                    # Save current metrics to use as pre-metrics for next run
+                    prev_metrics = post_metrics
+                    
+                    # Calculate metrics for this batch
+                    batch_metrics = {}
+                    
+                    # Create a batch detail record
+                    batch_detail = {
+                        "run_index": run_idx,
+                        "batch_size": len(batch_prompts),
+                        "success": request_result["success"],
+                        "metrics": {}
+                    }
+                    
+                    for name in TARGET_METRIC_NAMES:
+                        pre_sum = pre_metrics.get(name, {}).get("sum", 0.0)
+                        pre_count = pre_metrics.get(name, {}).get("count", 0.0)
+                        post_sum = post_metrics.get(name, {}).get("sum", 0.0)
+                        post_count = post_metrics.get(name, {}).get("count", 0.0)
+                        
+                        # Calculate delta
+                        delta_sum = post_sum - pre_sum
+                        delta_count = post_count - pre_count
+                        
+                        if delta_count > 0:
+                            avg_latency = delta_sum / delta_count
+                            batch_metrics[name] = avg_latency
+                            batch_detail["metrics"][name] = avg_latency
+                            print(f"  {name}: {avg_latency:.6f}s")
+                            
+                            # Collect metrics for averaging later
+                            if name == "vllm:e2e_request_latency_seconds":
+                                all_e2e_times.append(avg_latency)
+                            elif name == "vllm:request_prefill_time_seconds":
+                                all_prefill_times.append(avg_latency)
+                            elif name == "vllm:request_decode_time_seconds":
+                                all_decode_times.append(avg_latency)
+                            elif name == "vllm:request_inference_time_seconds":
+                                all_inference_times.append(avg_latency)
+                        else:
+                            batch_metrics[name] = None
+                            batch_detail["metrics"][name] = None
+                            print(f"  {name}: N/A (no count increase)")
+                    
+                    # Calculate Time Between Tokens (TBT)
+                    if "vllm:request_decode_time_seconds" in batch_metrics and batch_metrics["vllm:request_decode_time_seconds"] is not None:
+                        # Get total output tokens for this batch
+                        total_output_tokens = sum(request_result.get("output_token_counts", [0]))
+                        
+                        # Avoid division by zero
+                        if total_output_tokens > 0:
+                            # TBT = decode time / number of tokens
+                            time_between_tokens = batch_metrics["vllm:request_decode_time_seconds"] / total_output_tokens
+                            batch_metrics["time_between_tokens"] = time_between_tokens
+                            batch_detail["metrics"]["time_between_tokens"] = time_between_tokens
+                            print(f"  time_between_tokens: {time_between_tokens:.6f}s")
+                            all_tbts.append(time_between_tokens)
+                        else:
+                            print("  time_between_tokens: N/A (no output tokens)")
+                            batch_metrics["time_between_tokens"] = None
+                            batch_detail["metrics"]["time_between_tokens"] = None
+                    else:
+                        print("  time_between_tokens: N/A (decode time not available)")
+                        batch_metrics["time_between_tokens"] = None
+                        batch_detail["metrics"]["time_between_tokens"] = None
+                    
+                    # Save batch details
+                    all_request_details.append(batch_detail)
+                    
+                    if request_result["success"]:
+                        successful_requests += 1
+                
+                # 7. Shut down the server
+                shutdown_server(server_process)
+                server_process = None
+                
+                # 8. Calculate averages and store results in the JSON format needed for plot_e2e_time_chart_from_json
+                # Only add metrics if we had successful requests
+                if successful_requests > 0:
+                    # Calculate average metrics
+                    avg_e2e_time = statistics.mean(all_e2e_times) if all_e2e_times else 0
+                    avg_prefill_time = statistics.mean(all_prefill_times) if all_prefill_times else 0
+                    avg_decode_time = statistics.mean(all_decode_times) if all_decode_times else 0
+                    avg_inference_time = statistics.mean(all_inference_times) if all_inference_times else 0
+                    avg_tbt = statistics.mean(all_tbts) if all_tbts else 0
+                    
+                    final_results[prompt_set_key][f"chunk_size_{chunk_size}"] = {
+                        "avg_e2e_time": avg_e2e_time,
+                        "avg_prefill_time": avg_prefill_time,
+                        "avg_decode_time": avg_decode_time,
+                        "avg_inference_time": avg_inference_time,
+                        "avg_time_between_tokens": avg_tbt
+                    }
+                else:
+                    final_results[prompt_set_key][f"chunk_size_{chunk_size}"] = {
+                        "avg_e2e_time": 0,
+                        "avg_prefill_time": 0,
+                        "avg_decode_time": 0,
+                        "avg_inference_time": 0,
+                        "avg_time_between_tokens": 0,
+                        "error": "No successful requests"
+                    }
+                
+                # After the loop, save the detailed results for this chunk size
+                detailed_results = {
+                    "experiment_info": {
+                        "prompt_set": prompt_set_key,
+                        "chunk_size": chunk_size,
+                        "model": model_name,
+                        "generation_params": GENERATION_PARAMS
+                    },
+                    "requests": all_request_details
+                }
+
+                # Save to model-specific detailed directory
+                detailed_json_path = os.path.join(model_detailed_dir, f"{prompt_set_key}_chunk{chunk_size}.json")
+                try:
+                    with open(detailed_json_path, 'w') as f:
+                        json.dump(detailed_results, f, indent=2)
+                    print(f"Detailed request data saved to: {detailed_json_path}")
+                except Exception as e:
+                    print(f"Error saving detailed results to file: {e}")
+                
+                print(f"Finished testing chunk_size = {chunk_size} with {prompt_set_key}. Waiting before next run...")
+                time.sleep(10)  # Wait before next iteration
+
+        # Save and plot results for this model
+        # Pretty print summarized results
+        print(f"\n{'='*15} Final Results for {model_name} {'='*15}")
+        print(json.dumps(final_results, indent=2))
+
+        # Save aggregated results in the format needed for plotting
+        results_json_path = os.path.join(model_dir, f"chunk_size_results_{model_short_name}.json")
+        try:
+            with open(results_json_path, 'w') as f:
+                json.dump(final_results, f, indent=2)
+            print(f"Aggregated results saved to: {results_json_path}")
+        except Exception as e:
+            print(f"Error saving results to file: {e}")
+
+        # Create plot from the results
+        try:
+            plot_e2e_time_chart_from_json(results_json_path, model_dir, model_short_name)
+            print(f"Plot created in {model_dir}")
+        except Exception as e:
+            print(f"Error creating plot: {e}")
+
+except KeyboardInterrupt:
+    print("\nExperiment interrupted by user.")
+except ImportError:
+    print("\nERROR: OpenAI Python package not found. Install with: pip install openai>=1.0.0")
+finally:
+    # Final cleanup
+    if server_process and server_process.poll() is None:
+        print("Performing final cleanup on exit...")
+        shutdown_server(server_process)
+
+# --- Print final experiment summary ---
+print(f"\n{'='*15} Experiment Complete {'='*15}")
+print(f"Results saved to: {results_dir}")
+print(f"Models tested: {', '.join(MODEL_NAMES)}")

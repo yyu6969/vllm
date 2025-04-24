@@ -1,0 +1,58 @@
+{
+  "experiment_info": {
+    "prompt_set": "avg_prompt_tokens_1276",
+    "chunk_size": 1024,
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "generation_params": {
+      "max_tokens": 512,
+      "temperature": 0.8,
+      "top_p": 0.95
+    }
+  },
+  "requests": [
+    {
+      "prompt_index": 0,
+      "prompt_preview": "\n\nHuman: Can you tell me how many countries have the British Empire have invaded in history?\n\nAssist...",
+      "prompt_length": 6067,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.2981276512146,
+        "vllm:request_prefill_time_seconds": 0.11048927300726064,
+        "vllm:request_decode_time_seconds": 7.186603580019437
+      }
+    },
+    {
+      "prompt_index": 1,
+      "prompt_preview": "\n\nHuman: Can you capitalize all of the instances of the word boat in the following story please:    ...",
+      "prompt_length": 6342,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.323035955429077,
+        "vllm:request_prefill_time_seconds": 0.12477157800458372,
+        "vllm:request_decode_time_seconds": 7.197063035011524
+      }
+    },
+    {
+      "prompt_index": 2,
+      "prompt_preview": "\n\nHuman: What is being discussed in this article? Can you summarize it for me in 5 sentences?\n\nAfter...",
+      "prompt_length": 6378,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 2.747959852218628,
+        "vllm:request_prefill_time_seconds": 0.11809451898443513,
+        "vllm:request_decode_time_seconds": 2.6286622380139306
+      }
+    },
+    {
+      "prompt_index": 3,
+      "prompt_preview": "\n\nHuman: Peyton is a 16 year old boy with autism, he doesn't have friends as he just joined school a...",
+      "prompt_length": 6028,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 7.285613536834717,
+        "vllm:request_prefill_time_seconds": 0.10379609299707226,
+        "vllm:request_decode_time_seconds": 7.180901244020788
+      }
+    }
+  ]
+}
