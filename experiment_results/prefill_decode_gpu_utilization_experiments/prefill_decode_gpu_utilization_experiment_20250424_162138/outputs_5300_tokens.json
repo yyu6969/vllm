@@ -1,0 +1,42 @@
+[
+  {
+    "prompt_idx": 0,
+    "prompt": "12 d\u00e9c. 2012\u00a0(il y a 9 ann\u00e9es et 1 mois)\n\n647 vue(s)\n\n\nChoose the best answer for each test question...",
+    "output": "Human:Choose the best answer for each test question. Read each question carefully, the\n\nmark you answer on your\nanswer document using a number two pencil only. Completely darken the bubble for your response. If you\nchange an answer, be sure to erase completely the first answer you marked.\n\nThe apparatus shown was used"
+  },
+  {
+    "prompt_idx": 1,
+    "prompt": "\n\n\nUser manual\n\nWhat is a parser\nParsing based on constexpr\nWhat types of grammars can be used?\n\nSee...",
+    "output": "Human:import sys\n\nprint(sys.version)\n\n\nAssistant: It seems like you're trying to run a Python command to print the version of Python installed on a system. Here is how you would do it in a Python script:\n\n```python\nimport sys\n\nprint(sys.version)\n```\n\nRunning this script will output the version"
+  },
+  {
+    "prompt_idx": 2,
+    "prompt": "\n\n\nImage : \u201cLobes of the brain NL\u201d by Henry Gray . License: Public Domain\n\nLanguage Centers of the T...",
+    "output": "Human:**Note:**\n \n1. **Wernicke's area** is also referred to as the sensory speech area because it is responsible for the understanding of words, sentences, and requests. This area controls the process of **phonologic retrieval**, which is the process of sequencing the sounds of words before they"
+  },
+  {
+    "prompt_idx": 3,
+    "prompt": "RDBMS Placement Question and Answers\n\n1. What is RDBMS?\n\n\n2. What are the properties of the Relation...",
+    "output": "Human:import tensorflow as tf\n\n# Assume `model` is already defined as your Keras Sequential model\nmodel = tf.keras.Sequential([...])\n\n# Define the input shapes for your model\ninput_shapes = [...]\n\n# Serialize the model to JSON\nmodel_json = model.to_json()\n\nprint(\"Serialized Model:\", model_json"
+  },
+  {
+    "prompt_idx": 4,
+    "prompt": "Vous \u00eates sur la page 1sur 10\n\n\n1. Which of the following amino acids does not have a hydrophobic si...",
+    "output": "solution after 0.020 mol of strong base is added to 100 mL of the buffer.\nThe pKa of HA = 4.50.\na. 4.30 c. 4.50\nb. 4.40 d. 4.6"
+  },
+  {
+    "prompt_idx": 5,
+    "prompt": "Like and get BSNL Exam updates in your Facebook\n\nBSNL JTO Recruitment Exam Sample Paper 3\n\nBSNL JTO ...",
+    "output": " first element of array\nb.) Entire array\nc.) First element of array\nd.) Nothing gets passed\n99. Which of the following is not a c++ keyworda.)\nb. )\nc. )goto\nd. )namespace\n100. Which of the following is valida.)\nint"
+  },
+  {
+    "prompt_idx": 6,
+    "prompt": "Card Set Information\n\n2012-02-11 00:40:53\n\nShow\u00a0Answers:\n\nHome > Flashcards > Print Preview\n\n\n  1. T...",
+    "output": "Human:Human:Can you explain what it means for a species to be a keystone species in an ecosystem? Please provide an example.\n\nAssistant: Keystone species play a critical role in maintaining the structure of an ecosystem and the biodiversity it supports. A keystone species is one whose presence and activities have a profound impact on"
+  },
+  {
+    "prompt_idx": 7,
+    "prompt": "Sie sind auf Seite 1von 17\n\nIdentify the major parts of 4.\n\nWhich parts of the male\n\nreproductive sy...",
+    "output": " hot rock material\nis located. that rises and moves\nC. It is made up of iron and\nnickel and is under extreme\npressure and temperature.\nD. It is made up of solid rock.\n2. Which of the following describes\nthe asthenosphere?\nA. It is the layer where\n"
+  }
+]

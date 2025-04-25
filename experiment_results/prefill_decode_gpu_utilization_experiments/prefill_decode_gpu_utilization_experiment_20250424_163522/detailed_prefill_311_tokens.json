@@ -1,0 +1,1553 @@
+{
+  "token_length": 311,
+  "prefill_duration": 0.3204021453857422,
+  "detailed_data": [
+    {
+      "index": 487,
+      "timestamp": 0.5163102149963379,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 488,
+      "timestamp": 0.5173709392547607,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 489,
+      "timestamp": 0.5184309482574463,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 490,
+      "timestamp": 0.5194883346557617,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 491,
+      "timestamp": 0.5205459594726562,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 492,
+      "timestamp": 0.521604061126709,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 493,
+      "timestamp": 0.5226621627807617,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 494,
+      "timestamp": 0.5237240791320801,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 495,
+      "timestamp": 0.5247812271118164,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 496,
+      "timestamp": 0.5258386135101318,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 497,
+      "timestamp": 0.5268971920013428,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 498,
+      "timestamp": 0.5279557704925537,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 499,
+      "timestamp": 0.5290145874023438,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 500,
+      "timestamp": 0.530071496963501,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 501,
+      "timestamp": 0.5311291217803955,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 502,
+      "timestamp": 0.5321881771087646,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 503,
+      "timestamp": 0.5332479476928711,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 504,
+      "timestamp": 0.534306526184082,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 505,
+      "timestamp": 0.5353631973266602,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 506,
+      "timestamp": 0.5364203453063965,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 507,
+      "timestamp": 0.5374772548675537,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 508,
+      "timestamp": 0.5385358333587646,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 509,
+      "timestamp": 0.5395941734313965,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 510,
+      "timestamp": 0.5406525135040283,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 511,
+      "timestamp": 0.541710376739502,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 512,
+      "timestamp": 0.5427718162536621,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 513,
+      "timestamp": 0.543830156326294,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 514,
+      "timestamp": 0.5448887348175049,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 515,
+      "timestamp": 0.5459458827972412,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 516,
+      "timestamp": 0.5470027923583984,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 517,
+      "timestamp": 0.5480601787567139,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 518,
+      "timestamp": 0.5491185188293457,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 519,
+      "timestamp": 0.5501763820648193,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 520,
+      "timestamp": 0.5512351989746094,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 521,
+      "timestamp": 0.5522928237915039,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 522,
+      "timestamp": 0.5533504486083984,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 523,
+      "timestamp": 0.5544071197509766,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 524,
+      "timestamp": 0.5554659366607666,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 525,
+      "timestamp": 0.5565242767333984,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 526,
+      "timestamp": 0.5575809478759766,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 527,
+      "timestamp": 0.5586397647857666,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 528,
+      "timestamp": 0.5596978664398193,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 529,
+      "timestamp": 0.5607550144195557,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 530,
+      "timestamp": 0.5618162155151367,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 531,
+      "timestamp": 0.5628736019134521,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 532,
+      "timestamp": 0.5639302730560303,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 533,
+      "timestamp": 0.5649893283843994,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 534,
+      "timestamp": 0.5660476684570312,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 535,
+      "timestamp": 0.567105770111084,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 536,
+      "timestamp": 0.5681636333465576,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 537,
+      "timestamp": 0.5692203044891357,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 538,
+      "timestamp": 0.5702774524688721,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 539,
+      "timestamp": 0.5713341236114502,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 540,
+      "timestamp": 0.5723931789398193,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 541,
+      "timestamp": 0.5734498500823975,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 542,
+      "timestamp": 0.5745084285736084,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 543,
+      "timestamp": 0.5755667686462402,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 544,
+      "timestamp": 0.5766251087188721,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 545,
+      "timestamp": 0.5776822566986084,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 546,
+      "timestamp": 0.5787389278411865,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 547,
+      "timestamp": 0.5797953605651855,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 548,
+      "timestamp": 0.5808577537536621,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 549,
+      "timestamp": 0.581916332244873,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 550,
+      "timestamp": 0.5829751491546631,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 551,
+      "timestamp": 0.5840320587158203,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 552,
+      "timestamp": 0.5850884914398193,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 553,
+      "timestamp": 0.5861477851867676,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 554,
+      "timestamp": 0.587205171585083,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 555,
+      "timestamp": 0.5882663726806641,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 556,
+      "timestamp": 0.5893230438232422,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 557,
+      "timestamp": 0.5903823375701904,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 558,
+      "timestamp": 0.5914409160614014,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 559,
+      "timestamp": 0.5924978256225586,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 560,
+      "timestamp": 0.5935549736022949,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 561,
+      "timestamp": 0.594611644744873,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 562,
+      "timestamp": 0.5956685543060303,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 563,
+      "timestamp": 0.5967278480529785,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 564,
+      "timestamp": 0.5977864265441895,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 565,
+      "timestamp": 0.5988450050354004,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 566,
+      "timestamp": 0.5999054908752441,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 567,
+      "timestamp": 0.6009633541107178,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 568,
+      "timestamp": 0.6020207405090332,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 569,
+      "timestamp": 0.6030802726745605,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 570,
+      "timestamp": 0.6041390895843506,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 571,
+      "timestamp": 0.6051974296569824,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 572,
+      "timestamp": 0.6062545776367188,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 573,
+      "timestamp": 0.6073131561279297,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 574,
+      "timestamp": 0.6083717346191406,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 575,
+      "timestamp": 0.6094300746917725,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 576,
+      "timestamp": 0.6104865074157715,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 577,
+      "timestamp": 0.6115431785583496,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 578,
+      "timestamp": 0.6125998497009277,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 579,
+      "timestamp": 0.6136565208435059,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 580,
+      "timestamp": 0.6147129535675049,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 581,
+      "timestamp": 0.6157698631286621,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 582,
+      "timestamp": 0.6168262958526611,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 583,
+      "timestamp": 0.6178872585296631,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 584,
+      "timestamp": 0.6189444065093994,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 585,
+      "timestamp": 0.6200010776519775,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 586,
+      "timestamp": 0.6210606098175049,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 587,
+      "timestamp": 0.622117280960083,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 588,
+      "timestamp": 0.6231741905212402,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 589,
+      "timestamp": 0.6242308616638184,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 590,
+      "timestamp": 0.6252872943878174,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 591,
+      "timestamp": 0.6263439655303955,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 592,
+      "timestamp": 0.6274003982543945,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 593,
+      "timestamp": 0.6284592151641846,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 594,
+      "timestamp": 0.6295175552368164,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 595,
+      "timestamp": 0.6305756568908691,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 596,
+      "timestamp": 0.6316330432891846,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 597,
+      "timestamp": 0.6326897144317627,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 598,
+      "timestamp": 0.6337463855743408,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 599,
+      "timestamp": 0.634803056716919,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 600,
+      "timestamp": 0.635859489440918,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 601,
+      "timestamp": 0.636915922164917,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 602,
+      "timestamp": 0.6379773616790771,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 603,
+      "timestamp": 0.6390345096588135,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 604,
+      "timestamp": 0.6400952339172363,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 605,
+      "timestamp": 0.6411519050598145,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 606,
+      "timestamp": 0.6422085762023926,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 607,
+      "timestamp": 0.6432652473449707,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 608,
+      "timestamp": 0.6443235874176025,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 609,
+      "timestamp": 0.6453797817230225,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 610,
+      "timestamp": 0.6464383602142334,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 611,
+      "timestamp": 0.6474957466125488,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 612,
+      "timestamp": 0.6485521793365479,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 613,
+      "timestamp": 0.6496093273162842,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 614,
+      "timestamp": 0.6506667137145996,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 615,
+      "timestamp": 0.6517236232757568,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 616,
+      "timestamp": 0.6527807712554932,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 617,
+      "timestamp": 0.6538400650024414,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 618,
+      "timestamp": 0.6548962593078613,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 619,
+      "timestamp": 0.6559610366821289,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 620,
+      "timestamp": 0.657017707824707,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 621,
+      "timestamp": 0.6580743789672852,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 622,
+      "timestamp": 0.6591310501098633,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 623,
+      "timestamp": 0.6601879596710205,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 624,
+      "timestamp": 0.6612470149993896,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 625,
+      "timestamp": 0.6623053550720215,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 626,
+      "timestamp": 0.6633620262145996,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 627,
+      "timestamp": 0.6644184589385986,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 628,
+      "timestamp": 0.6654751300811768,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 629,
+      "timestamp": 0.6665315628051758,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 630,
+      "timestamp": 0.667588472366333,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 631,
+      "timestamp": 0.668647050857544,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 632,
+      "timestamp": 0.6697051525115967,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 633,
+      "timestamp": 0.6707632541656494,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 634,
+      "timestamp": 0.6718201637268066,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 635,
+      "timestamp": 0.6728777885437012,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 636,
+      "timestamp": 0.6739351749420166,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 637,
+      "timestamp": 0.6749958992004395,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 638,
+      "timestamp": 0.6760544776916504,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 639,
+      "timestamp": 0.6771109104156494,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 640,
+      "timestamp": 0.6781699657440186,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 641,
+      "timestamp": 0.6792263984680176,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 642,
+      "timestamp": 0.6802828311920166,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 643,
+      "timestamp": 0.681340217590332,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 644,
+      "timestamp": 0.6823968887329102,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 645,
+      "timestamp": 0.6834535598754883,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 646,
+      "timestamp": 0.6845099925994873,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 647,
+      "timestamp": 0.6855683326721191,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 648,
+      "timestamp": 0.6866250038146973,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 649,
+      "timestamp": 0.6876838207244873,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 650,
+      "timestamp": 0.6887402534484863,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 651,
+      "timestamp": 0.6897966861724854,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 652,
+      "timestamp": 0.6908550262451172,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 653,
+      "timestamp": 0.6919131278991699,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 654,
+      "timestamp": 0.6929714679718018,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 655,
+      "timestamp": 0.6940336227416992,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 656,
+      "timestamp": 0.695091724395752,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 657,
+      "timestamp": 0.6961500644683838,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 658,
+      "timestamp": 0.6972064971923828,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 659,
+      "timestamp": 0.6982629299163818,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 660,
+      "timestamp": 0.6993198394775391,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 661,
+      "timestamp": 0.70037841796875,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 662,
+      "timestamp": 0.7014362812042236,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 663,
+      "timestamp": 0.70249342918396,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 664,
+      "timestamp": 0.7035515308380127,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 665,
+      "timestamp": 0.7046079635620117,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 666,
+      "timestamp": 0.7056643962860107,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 667,
+      "timestamp": 0.7067210674285889,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 668,
+      "timestamp": 0.7077794075012207,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 669,
+      "timestamp": 0.7088358402252197,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 670,
+      "timestamp": 0.7098944187164307,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 671,
+      "timestamp": 0.7109506130218506,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 672,
+      "timestamp": 0.7120070457458496,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 673,
+      "timestamp": 0.7130703926086426,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 674,
+      "timestamp": 0.7141292095184326,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 675,
+      "timestamp": 0.7151856422424316,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 676,
+      "timestamp": 0.7162461280822754,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 677,
+      "timestamp": 0.7173049449920654,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 678,
+      "timestamp": 0.7183620929718018,
+      "gpu_utilization": 0.0
+    },
+    {
+      "index": 679,
+      "timestamp": 0.7194206714630127,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 680,
+      "timestamp": 0.7204775810241699,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 681,
+      "timestamp": 0.7215352058410645,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 682,
+      "timestamp": 0.7225916385650635,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 683,
+      "timestamp": 0.7236497402191162,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 684,
+      "timestamp": 0.724708080291748,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 685,
+      "timestamp": 0.7257661819458008,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 686,
+      "timestamp": 0.7268245220184326,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 687,
+      "timestamp": 0.7278811931610107,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 688,
+      "timestamp": 0.7289378643035889,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 689,
+      "timestamp": 0.7299942970275879,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 690,
+      "timestamp": 0.7310528755187988,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 691,
+      "timestamp": 0.7321138381958008,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 692,
+      "timestamp": 0.7331726551055908,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 693,
+      "timestamp": 0.7342309951782227,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 694,
+      "timestamp": 0.7352890968322754,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 695,
+      "timestamp": 0.7363457679748535,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 696,
+      "timestamp": 0.7374024391174316,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 697,
+      "timestamp": 0.7384588718414307,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 698,
+      "timestamp": 0.7395172119140625,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 699,
+      "timestamp": 0.7405736446380615,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 700,
+      "timestamp": 0.7416322231292725,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 701,
+      "timestamp": 0.7426886558532715,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 702,
+      "timestamp": 0.743746280670166,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 703,
+      "timestamp": 0.7448029518127441,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 704,
+      "timestamp": 0.7458593845367432,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 705,
+      "timestamp": 0.7469158172607422,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 706,
+      "timestamp": 0.7479722499847412,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 707,
+      "timestamp": 0.7490308284759521,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 708,
+      "timestamp": 0.7500886917114258,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 709,
+      "timestamp": 0.7511508464813232,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 710,
+      "timestamp": 0.7522082328796387,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 711,
+      "timestamp": 0.7532656192779541,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 712,
+      "timestamp": 0.7543227672576904,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 713,
+      "timestamp": 0.7553799152374268,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 714,
+      "timestamp": 0.7564363479614258,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 715,
+      "timestamp": 0.7574958801269531,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 716,
+      "timestamp": 0.7585535049438477,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 717,
+      "timestamp": 0.7596108913421631,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 718,
+      "timestamp": 0.760667085647583,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 719,
+      "timestamp": 0.7617247104644775,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 720,
+      "timestamp": 0.7627811431884766,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 721,
+      "timestamp": 0.763838529586792,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 722,
+      "timestamp": 0.7648968696594238,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 723,
+      "timestamp": 0.7659554481506348,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 724,
+      "timestamp": 0.7670135498046875,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 725,
+      "timestamp": 0.7680721282958984,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 726,
+      "timestamp": 0.7691292762756348,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 727,
+      "timestamp": 0.7701897621154785,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 728,
+      "timestamp": 0.7712478637695312,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 729,
+      "timestamp": 0.7723062038421631,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 730,
+      "timestamp": 0.7733662128448486,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 731,
+      "timestamp": 0.7744247913360596,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 732,
+      "timestamp": 0.7754817008972168,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 733,
+      "timestamp": 0.7765383720397949,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 734,
+      "timestamp": 0.777594804763794,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 735,
+      "timestamp": 0.778651237487793,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 736,
+      "timestamp": 0.7797079086303711,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 737,
+      "timestamp": 0.7807662487030029,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 738,
+      "timestamp": 0.7818241119384766,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 739,
+      "timestamp": 0.7828822135925293,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 740,
+      "timestamp": 0.7839388847351074,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 741,
+      "timestamp": 0.7849953174591064,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 742,
+      "timestamp": 0.7860517501831055,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 743,
+      "timestamp": 0.7871086597442627,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 744,
+      "timestamp": 0.7881648540496826,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 745,
+      "timestamp": 0.7892270088195801,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 746,
+      "timestamp": 0.7902853488922119,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 747,
+      "timestamp": 0.7913415431976318,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 748,
+      "timestamp": 0.79239821434021,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 749,
+      "timestamp": 0.7934548854827881,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 750,
+      "timestamp": 0.7945113182067871,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 751,
+      "timestamp": 0.795567512512207,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 752,
+      "timestamp": 0.796626091003418,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 753,
+      "timestamp": 0.7976844310760498,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 754,
+      "timestamp": 0.7987425327301025,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 755,
+      "timestamp": 0.7997992038726807,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 756,
+      "timestamp": 0.8008558750152588,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 757,
+      "timestamp": 0.8019130229949951,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 758,
+      "timestamp": 0.8029694557189941,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 759,
+      "timestamp": 0.8040275573730469,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 760,
+      "timestamp": 0.8050858974456787,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 761,
+      "timestamp": 0.8061442375183105,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 762,
+      "timestamp": 0.8072021007537842,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 763,
+      "timestamp": 0.8082623481750488,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 764,
+      "timestamp": 0.8093202114105225,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 765,
+      "timestamp": 0.8103775978088379,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 766,
+      "timestamp": 0.811434268951416,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 767,
+      "timestamp": 0.8124914169311523,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 768,
+      "timestamp": 0.813549280166626,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 769,
+      "timestamp": 0.8146076202392578,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 770,
+      "timestamp": 0.8156638145446777,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 771,
+      "timestamp": 0.8167204856872559,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 772,
+      "timestamp": 0.8177773952484131,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 773,
+      "timestamp": 0.8188345432281494,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 774,
+      "timestamp": 0.8198912143707275,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 775,
+      "timestamp": 0.8209497928619385,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 776,
+      "timestamp": 0.8220081329345703,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 777,
+      "timestamp": 0.823065996170044,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 778,
+      "timestamp": 0.8241240978240967,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 779,
+      "timestamp": 0.8251802921295166,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 780,
+      "timestamp": 0.8262369632720947,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 781,
+      "timestamp": 0.8272991180419922,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 782,
+      "timestamp": 0.828357458114624,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 783,
+      "timestamp": 0.8294153213500977,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 784,
+      "timestamp": 0.8304734230041504,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 785,
+      "timestamp": 0.8315298557281494,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 786,
+      "timestamp": 0.8325867652893066,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 787,
+      "timestamp": 0.8336429595947266,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 788,
+      "timestamp": 0.8346996307373047,
+      "gpu_utilization": 53.0
+    },
+    {
+      "index": 789,
+      "timestamp": 0.8357596397399902,
+      "gpu_utilization": 53.0
+    }
+  ],
+  "statistics": {
+    "min": 0.0,
+    "max": 53.0,
+    "median": 0.0,
+    "mean": 19.415841584158414,
+    "std_dev": 25.535557552935103,
+    "histogram": [
+      192.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      111.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "histogram_bins": [
+      0,
+      10,
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100
+    ]
+  }
+}

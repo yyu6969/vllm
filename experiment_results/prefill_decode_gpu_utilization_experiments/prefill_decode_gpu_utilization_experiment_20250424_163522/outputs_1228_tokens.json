@@ -1,0 +1,42 @@
+[
+  {
+    "prompt_idx": 0,
+    "prompt": "Analysis of a single candle flame (or stick)\n\nYes, so\u2026- we start, we light up..,\nrocket\u2026- \u201claunch\u201d\u2026\n...",
+    "output": " of the phenomenon of burning\n  1. No comments yet.\n  1. No trackbacks yet."
+  },
+  {
+    "prompt_idx": 1,
+    "prompt": "SEER Training Modules\n\nTypes of Radiation Therapy\n\nThere are two main types of radiation therapy: ex...",
+    "output": " It is an iodine compound that is taken up avidly by thyroid tissue. Because patients who have had thyroid cancer have areas of functioning thyroid tissue left behind after surgery, I-131 accumulates in those sites and destroys them and any accompanying cancer cells. Another intravenous approach is Y-90 microsphere therapy, which can be injected into the hepatic artery, supplying blood to the liver, where the microspheres get trapped and emit beta radiation directly into the tumor. This is done with relatively little damage to the surrounding liver tissue. Yttrium-90 is also used to treat leukemia and lymphoma, and in sentinel lymph node biopsy. It may be used in combination with a monoclonal antibody to direct the radiation specifically to the desired target.\n\nRadiation Sources Used in Teletherapy and Brachytherapy\n\nRadiation sources used in teletherapy include:\n\n  \u2022 Cobalt-60 teletherapy units\n  \u2022 High-energy megavoltage linear accelerators\n  \u2022 Low-energy orthovoltage x-ray machines\n  \u2022 Proton beams\n\nRadiation sources used in brachytherapy include:\n\n  \u2022 Radioactive iridium (Ir-192)\n  \u2022 Radioactive cesium (Cs-137)\n  \u2022 Cobalt-60\n  \u2022 Palladium (Pd-103)\n  \u2022 Gold (Au-198)\n  \u2022 Strontium (Sr-90) and Yttrium (Y-90)\n  \u2022 Iodine (I-125) for permanent implants\n  \u2022 Phosphorus (P-32) and Yttrium (Y-90)\n  \u2022 Yttrium-90 labeled monoclonal antibodies\n  \u2022 Radioiodine (I-131) used in thyroid cancer treatment and in radioimmunotherapy (RIT)\n  \u2022 Indium-111 labeled compounds for detection of occult disease and metastasis\n  \u2022 Technetium-99m labeled compounds for detection of occult disease and metastasis\n  \u2022 Fluorodeoxyglucose (FDG) for positron emission tomography (PET) imaging\n\nRadiation sources used in brachytherapy may also include radiolabeled monoclonal antibodies.\n\nFor brachytherapy, the radiation source may be placed inside the body, close to the tumor, or on the skin. These techniques are used when the radiation needs to travel only a very short distance ("
+  },
+  {
+    "prompt_idx": 2,
+    "prompt": "Explore BrainMass\n\nGlobalization and Multinational Corporations\n\n1. Some global enterprises engage i...",
+    "output": " References are included. Globalization and multinational corporations are determined. The expert selects the best answers."
+  },
+  {
+    "prompt_idx": 3,
+    "prompt": "\n\nSign up\nHere's how it works:\n  1. Anybody can ask a question\n  2. Anybody can answer\n\nThe Point-In...",
+    "output": "Browse other questions tagged or ask your own question."
+  },
+  {
+    "prompt_idx": 4,
+    "prompt": "Mind Matters Natural and Artificial Intelligence News and Analysis\nmetallic numbers.jpg\nabstract met...",
+    "output": ""
+  },
+  {
+    "prompt_idx": 5,
+    "prompt": "Thursday, July 27, 2006\n\nTRIM()function in Excel\n\nThis formula removes all spaces from text except n...",
+    "output": "\n\nDate & Time Function: DATE()\n\nThis formula returns the sequential number that represents a date.\n\n\nyear is the number indicating year.\n\nmonth is the number indicating month.\n\nday is the number indicating day.\n\nFor example, if the formula is =DATE(2006,7,8)\nThe result will be 38878 (which is a sequential number representing a date of 8th July, 2006)\n\nYou may change the format of the outcome to show the date format by selecting Format > Cells > Number > Date. After that, the result will display as 08/07/2006. (Depending on your regional setting, it could be 07/08/2006).\n\nKeywords: Date, Time\n\nDate & Time Function: TIME()\n\nThis formula returns the decimal number representing a particular time.\n\n\nhour is the hour.\n\nminute is the minute.\n\nsecond is the second.\n\nFor example, if the formula is =TIME(15,25,45)\nThe result will be 15:25:45\n\nKeywords: Date, Time\n\nWednesday, July 05, 2006\n\nText Function: PROPER()\n\nThis formula converts the first letter of each word in text to uppercase.\n\nFor example, if the text is \u201cit is a sunny day\u201d\nThen the result of PROPER(\u201cit is a sunny day\u201d) is \u201cIt Is A Sunny Day\u201d\n\n\ntext is the text to be converted\n\nNote that the remaining letters are converted to lowercase. However, letters that are already uppercase are kept unchanged.\nFor example, if the text is \u201cIT IS A SUNNY DAY\u201d\nThen the result of PROPER(\u201cIT IS A SUNNY DAY\u201d) is \u201cIt Is A Sunny Day\u201d\n\nPlease note that PROPER function does not recognise non-alphabetical characters, hence these characters will not be converted. For example, if the text is \u201cit is a sunny day\u2026\u201d\nThe result of PROPER(\u201cit is a sunny day\u2026\u201d) is \u201cIt Is A Sunny Day\u2026\u201d\n\nKeywords: Text\n\nText Function: UPPER()\n\nThis formula converts all alphabetical characters in text to uppercase.\n\n\ntext is the text to be converted\n\nFor example, if the text is \u201cit is a sunny day\u201d\nThen the result of UPPER(\u201cit is a sunny day\u201d) is \u201cIT IS A SUNNY DAY\u201d\n\nKeywords: Text\n\nText Function: LOWER()\n\nThis formula converts all alphabetical characters in text to"
+  },
+  {
+    "prompt_idx": 6,
+    "prompt": "\n    Dismiss Notice\nDismiss Notice\nJoin Physics Forums Today!\n\nHomework Help: Special Relativity And...",
+    "output": " (as if you actually thought i believed anyone had a ship that could get there in 50 years)\n\n    i would suggest you think about the problem in terms of what you know, and use the time dilation and length contraction formulae.\n\n    start by figuring out the speed of the ship, in the earth frame.\n    then figure out the distance to andromeda in the ship's frame (use length contraction).\n\n    then you can figure out how much time passed on the ship while going there (use length = velocity * time), and add that to the 50 years that passed on the ship during the journey to figure out how much time passed on earth.\n\n    note that the ship sent a signal back once it got to andromeda, so that doesn't change anything.\n    last edited by me: 12/8/05 2:37 pm\n  22. Dec 8, 2005 #21\n    Thanks Doodle Bob.\n    I tried it out using:\n    t = gamma t'\n    d' = gamma d\n    d = 2 000 000 ly\n    t' = 50 years\n    v = 0.99995c\n\n    Then I solved for t (using the gamma values), added that to 50 years and got a value of 2 million years. Is this right? Thanks again for the help.\n  23. Dec 8, 2005 #22\n    i don't see how you got v = 0.99995c\n    how did you find that?\n\n    i'm guessing you used the time dilation formula,\n    t' = \u03b3t, where t' is the time on the ship, and t is the time on earth.\n    you're right, i suppose, since \u03b3v \u2248 1 for speeds that are nearly the speed of light. (i.e., time dilation is large).\n\n    it is worth noting that the distance traveled on the ship is contracted. the distance is contracted by the same factor as time dilates. so the trip seems like 50 years because of time dilation, and the distance to andromeda is only 2 light years because of length contraction.\n\n    so the ship travels 2 light years in 50 years, giving a speed of c/25.\n  24. Dec 8, 20"
+  },
+  {
+    "prompt_idx": 7,
+    "prompt": "How Do I Study the Units and Measurements Chapter in Physics for the NEET?\n\nFor learners, NEET, or t...",
+    "output": "%d bloggers like this:"
+  }
+]

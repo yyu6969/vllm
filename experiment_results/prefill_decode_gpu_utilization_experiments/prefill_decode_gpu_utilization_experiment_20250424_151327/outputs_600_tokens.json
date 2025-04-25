@@ -1,0 +1,50 @@
+[
+  {
+    "prompt_idx": 0,
+    "prompt_token_count": 600,
+    "prompt": "Take the 2-minute tour \u00d7\n\nI'm slowly grasping this, though the different formulations of type theory...",
+    "output": " |                |\n                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |                |\n                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   V                V\n\nNot the answer you're looking for? Browse other questions tagged ."
+  },
+  {
+    "prompt_idx": 1,
+    "prompt_token_count": 600,
+    "prompt": "Ask Your Question\n\nParallel computation for different functions\n\nasked 2020-02-21 08:37:16 +0200\n\ndz...",
+    "output": "Seen: 159 times\n\nLast updated: Feb 21 '20"
+  },
+  {
+    "prompt_idx": 2,
+    "prompt_token_count": 600,
+    "prompt": "Jump to main content.\n\nWhat is Ecological Risk Assessment?\n\nRisk Assessment in Superfund\n\nAn importa...",
+    "output": " Local Navigation\n\nExit EPA:\n\nSuperfund Home\n\nSuperfund Topics\n\nJump to main content."
+  },
+  {
+    "prompt_idx": 3,
+    "prompt_token_count": 600,
+    "prompt": "What does the IBO offer ?\nThe IBO develops three programmes of international education for students ...",
+    "output": " 3000 schools worldwide participate in the diploma programme.\u00a0 These schools are located in 140 countries.\u00a0 This allows for the exchange of ideas and materials between all schools participating in the programme.\u00a0 The IB diploma is recognized worldwide as a qualification of distinction.\u00a0 It is not only accepted by most"
+  },
+  {
+    "prompt_idx": 4,
+    "prompt_token_count": 600,
+    "prompt": "I'm using a Kolmogorov-Smirnov test to examine how normal (or Gaussian) some data sets I have are. I...",
+    "output": "% of the datasets \"satisfy the K-S tests\"? That doesn't quite make sense to me. The K-S test is a hypothesis test, so either you reject $H_\\emptyset$ (the null hypothesis that the dataset came from a Gaussian distribution) or you fail to reject $H_\\emptyset"
+  },
+  {
+    "prompt_idx": 5,
+    "prompt_token_count": 600,
+    "prompt": "Laerd Statistics LoginCookies & Privacy\n\nDependent t-test for paired samples\n\nWhat does this test do...",
+    "output": "\n\n\n\u00a0 Back to Top | Ib Psychology Revision Notes Home\n\nCopyright \u00a9 2016 All Rights Reserved. Privacy Policy | Contact Us\nAll material on this website is protected by copyright law. Copyright \u00a9 2016\nPlease note that we accept no liability for any errors or omissions in our content"
+  },
+  {
+    "prompt_idx": 6,
+    "prompt_token_count": 600,
+    "prompt": "Take the 2-minute tour \u00d7\n\nenter image description here\n\nThe question asked was \"what should be the a...",
+    "output": " <amp-fit-text layout=\"fixed-height\" height=\"35\"></amp-fit-text>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       </amp-anim>"
+  },
+  {
+    "prompt_idx": 7,
+    "prompt_token_count": 600,
+    "prompt": "Python string count function | Count total characters in string & occurrences\n\nThe python string cou...",
+    "output": "\n\n\nLeave a Reply"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "prompt_idx": 0,
+    "prompt": "Take the 2-minute tour \u00d7\n\nI'm slowly grasping this, though the different formulations of type theory...",
+    "output": "You\u00a0can\u00a0put\u00a0math\u00a0here\n\n\u00a0\u00a0numbers\u00a0and\u00a0letters!\">0\n\u00a0\u00a0\u00a0\u00a0\\(\\sum_{n=1}^\\infty \\frac{1}{n^2} = \\frac{\\pi^2}{6}\\)\n\u00a0\u00a0\u00a0\u00a0\\[\\sqrt[4]{2\\"
+  },
+  {
+    "prompt_idx": 1,
+    "prompt": "Ask Your Question\n\nParallel computation for different functions\n\nasked 2020-02-21 08:37:16 +0200\n\ndz...",
+    "output": "Seen: 91 times\n\nLast updated: Feb 21 '20"
+  },
+  {
+    "prompt_idx": 2,
+    "prompt": "Jump to main content.\n\nWhat is Ecological Risk Assessment?\n\nRisk Assessment in Superfund\n\nAn importa...",
+    "output": "Human:Can you explain how an ecological risk assessment is conducted at a Superfund site, including the key steps involved? Can you also clarify what kind of data and information are typically needed to conduct such an assessment?\n\nAssistant: An Ecological Risk Assessment (ERA) at a Superfund site involves several key steps to evaluate"
+  },
+  {
+    "prompt_idx": 3,
+    "prompt": "What does the IBO offer ?\nThe IBO develops three programmes of international education for students ...",
+    "output": " a set of courses, the programme is a comprehensive approach to education that aims to develop responsible and committed learners. The DP has been developed in consultation with universities around the world, including those in Egypt, which value the breadth and rigour of the programme.\nIn addition, the DP is different from other programmes as it encourages"
+  },
+  {
+    "prompt_idx": 4,
+    "prompt": "I'm using a Kolmogorov-Smirnov test to examine how normal (or Gaussian) some data sets I have are. I...",
+    "output": "% of datasets satisfy the test? The test is not a classification problem, so you should not frame it in terms of a success/failure metric. In order to properly use the output of the K-S test, you must decide ahead of time how much of a risk you want to take of falsely rejecting the null hypothesis"
+  },
+  {
+    "prompt_idx": 5,
+    "prompt": "Laerd Statistics LoginCookies & Privacy\n\nDependent t-test for paired samples\n\nWhat does this test do...",
+    "output": "#Write an explanation for why the dependent t-test cannot test for both changes and differences between groups simultaneously.\n\nThe dependent t-test cannot test for both changes and differences between groups simultaneously because it is specifically designed to assess one of these two things, depending on the study design. Let's break down why:\n\n### Testing for Changes"
+  },
+  {
+    "prompt_idx": 6,
+    "prompt": "Take the 2-minute tour \u00d7\n\nenter image description here\n\nThe question asked was \"what should be the a...",
+    "output": "Take 1/2 a second\nTake 1/2 a second\nTake 1/2 a second\nTake 1/2 a second\n\u2013\u00a0Satwik Pasani Jun 22 '13 at 17:00\nThanks a lot @user23634!"
+  },
+  {
+    "prompt_idx": 7,
+    "prompt": "Python string count function | Count total characters in string & occurrences\n\nThe python string cou...",
+    "output": "\n\nExit mobile version"
+  }
+]

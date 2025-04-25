@@ -1,0 +1,42 @@
+[
+  {
+    "prompt_idx": 0,
+    "prompt": "12 Mar 2015\nMarch 12, 2015\n\nQuestion of the Day \u2013 March 12\n\n0 Comment\n\nThe correct answer to yesterday\u2019s question is A: The patient had a previous upper respiratory infection.\n\nToday\u2019s sample question is from the optional Physiotherapy Examination.\n\nModulation of electrical current helps prevent ______ of muscle tissue.\n\nA.\u00a0 adaptation\n\nB.\u00a0 fatigue\n\nC.\u00a0 recruitment\n\nD.\u00a0 excitation\n\nLeave a Reply\n",
+    "output": "Your email address will not be published. *Required fields\n\n\nSubscribe To Our Newsletter\n\nSubscribe To Our Newsletter\n\nJoin our mailing list to receive the latest news and updates from MedCram.\n\nYou have Successfully Subscribed!"
+  },
+  {
+    "prompt_idx": 1,
+    "prompt": "Exam 300-101 Question id=502 Layer 2 Technologies\n\nRefer to the exhibit.\ninterface Ethernet 0 ppoe-client dial-pool-number 5 ppoe-client ppp-max-payload 1500 interface Dialer 1 ip address negotiated dialer pool 5 mtu 1492\nWhich statement about the configuration is true?\n\nA. This configuration is incorrect because the MTU must match the ppp-max-payload that is defined.\nB. This configuration is incorrect because the dialer interface number must be the same as the dialer pool number.\nC. This configuration is missing an IP address on the dialer interface.\nD. This configuration represents a complete PPPoE client configuration on an Ethernet connection.\n\n\n\nonly logged users can write comments",
+    "output": ""
+  },
+  {
+    "prompt_idx": 2,
+    "prompt": "A one-year insurance policy pays $10822 if the policyholder dies within one year. The premium paid by the policyholder is $351, and the probability of death within that year is 0.006. What is the expected gain of the policy for the insurance company?\n\n1 Answer\nApr 13, 2018\n\nThe expected gain is #$286.07#.\n\n\nThe expected gain for the insurance company is the revenue for the policy minus the cost for the policy\n\nThe revenue for the policy is $351.\n\nThe cost for the policy is the expected value of the benefit of the policy.\n\nThe expected value of the policy is the amount that the policy pays times the probability of paying.\n\n\nexpected gain = revenue #-# payout #xx# probability of payout",
+    "output": "\n\nexpected gain = $351 - ($10822 #xx# 0.006)\n\nexpected gain = $351 - $64.93\n\nexpected gain = $286.07# or $286.10 to the nearest tenth of a dollar. The insurance company can be expected to gain about $286.10 on the average policy. It should be noted that there will be some policies which result in a loss for the company. However, the more policies sold, the closer the actual gain will approach the expected gain. The expected gain"
+  },
+  {
+    "prompt_idx": 3,
+    "prompt": "20\u00b0C corresponds to ____________\n\nT = 20oC + 273 = 293 K\n\n\n  \u2022 Celsius and Kelvin are units of temperature.\u00a0\u00a0The basic unit of temperature in the SI system is the kelvin (K).\n    The Celsius scale is used most often in the clinical laboratory.\n  \u2022 The kelvin and Celsius scales are closely related and conversion between them is simply because the units are equal in magnitude.\n  \u2022 To convert from Kelvin to degree celsius add 273K = oC + 273\n  \u2022 To convert from degrees Celsius to kelvin subtract 273\n\n\u00a0 \u00a0 \u00a0 \u00a0 \u00a0 \u00a0oC = K \u2013 273\n\n\nHence to convert 20oC to kelvin we add 273 to it\n\n20oC+ 273 = 293 K\n\nWas this answer helpful?\n\n\n0 (0)\n\n\nChoose An Option That Best Describes Your Problem\n\nThank you. Your Feedback will Help us Serve you better.\n\nLeave a Comment\n\nYour Mobile number and Email id will not be published.\n\n\n\n\n\nApp Now",
+    "output": ""
+  },
+  {
+    "prompt_idx": 4,
+    "prompt": "At Project Sparks, we believe:\n\n1) The best teachers are those who know what it\u2019s like to struggle.\n\n2) Music is a powerful tool to help children learn how to fail and find their creative voice.\n\nThat's why we train musically gifted disabled artists to teach music to children and young people.\n\nSo far, the inspiring Leaders of Project Sparks have taught over 1,250 children.....and they are only getting started! ???? ?? ????\n\n\nWhat is Project Sparks?\n\n\n\nLanguage is all around us, so it is important that kids learn how to use adjectives, verbs and nouns to make the world better ???? ??\n\n\n\nWatch this very special collaboration between the Leaders of Project Sparks with Cumber Claudy Primary School..",
+    "output": " ??\n\n\n\nHow do we do it?\n\nWe train the most inspiring disabled musicians to deliver bespoke workshops that focus on the skills needed for life. From resilience, communication and self-confidence, to teamwork, empathy and creative problem-solving, we make sure every student can develop a new skill they didn't know they had.\n\nOur workshops are fun, interactive, and most importantly, accessible. We believe in the power of learning through play, which is why our sessions incorporate traditional games such as Simon Says, but we also create new games, such as \u201cI\u2019m going on a musical picnic\u201d.\n\nWhy music?\n\nWe choose music because we believe everyone has a"
+  },
+  {
+    "prompt_idx": 5,
+    "prompt": "How are factors and products related?\n\n1 Answer\nMar 19, 2018\n\nFactors are what you multiply to get a product.\n\n\nIn a multiplication problem, there are two types of numbers. Factors, and products. Factors are going to be #color(green)(green)# and products are going to be #color(red)(red#.\n\n\nThat is how factors (what you are mulltiplying) and products (what you end up with) are related.",
+    "output": " The numbers being multiplied together are called factors and the answer to a multiplication problem is called a product.\n\nFor example:\n\n#\"3\" xx \"4\" = \"12\"#\n\n#color(green)(\"3\")# and #color(green)(\"4\")# are factors and #color(red)(\"12\")# is the product. Another way to say this is 3 and 4 are the factors of 12. It's like saying 12 is made by multiplying 3 and 4. Or 12 is a multiple of 3 and 4.\n\nYou can have more than 2 factors though."
+  },
+  {
+    "prompt_idx": 6,
+    "prompt": "Which one is correctly matched?\n\n[wp_quiz id=\u201d14284\u2033]\n\nThe correctly matched pair is AIDS virus-Reverse transcriptase.\n\nAcquired Immune Deficiency Syndrome is caused due to the Human Immunodeficiency Virus (HIV) in humans. HIV is a retrovirus belonging to the family Retroviridae. The genome of HIV consists of two single-stranded positive-sense RNA enclosed inside a capsid.\n\nTo replicate its RNA, HIV uses an enzyme called Reverse transcriptase. The enzyme Reverse transcriptase generates complementary DNA (cDNA) using the viral RNA as a template. The process of synthesis of DNA from RNA is called Reverse Transcription.",
+    "output": " The cDNA is then incorporated into the host\u2019s genome where it integrates and replicates using the host cellular machinery.\n\nThus, AIDS virus and reverse transcriptase are correctly matched. Other options do not match with each other. For example, BCG vaccine is used for the prevention of tuberculosis. Cholera toxin is produced by the bacteria Vibrio cholerae.\n\nLeave a Comment\n\n\n\nFree Class"
+  },
+  {
+    "prompt_idx": 7,
+    "prompt": "Who do I contact to report suspected cheating?\n\nAlthough AP Exams are administered under strict supervision and secure conditions, misconduct or testing irregularities may occur. Please contact the Office of Testing Integrity as soon as possible if you observe behavior that is in violation of College Board\u2019s test security and test administration policies or procedures.",
+    "output": " Contact can be made by email at integrity@collegeboard.org or by phone at (212) 713-8065. The College Board will work with your school to investigate any allegations of misconduct or irregularities.\n\nWhat should I do if I suspect that someone has compromised an exam?\n\nPlease contact the Office of Testing Integrity as soon as possible if you have information regarding any compromise or potential compromise of a College Board test. You may send an email to integrity@collegeboard.org or call (212) 713-8065. The College Board will take appropriate action based on its"
+  }
+]

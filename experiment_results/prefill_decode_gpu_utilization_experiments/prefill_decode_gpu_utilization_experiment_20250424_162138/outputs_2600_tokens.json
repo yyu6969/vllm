@@ -1,0 +1,42 @@
+[
+  {
+    "prompt_idx": 0,
+    "prompt": "How can we help?\n\nYou can also find more resources in our Help Center.\n\n79 terms\n\nANPS Exam 1: Lab 1...",
+    "output": "Human:Human:Write a sentence that uses alliteration.\n\nAssistant: Sunny summers seem so splendidly serene. \n\nThis sentence uses alliteration by starting multiple words with the letter 's'.\n\nHuman:Human: Can you provide more examples of sentences using alliteration?\n\nAssistant:\n\n1. Peter Piper picked a peck of"
+  },
+  {
+    "prompt_idx": 1,
+    "prompt": "Busy. Please wait.\n\nshow password\nForgot Password?\n\nDon't have an account? \u00a0Sign up\u00a0\n\nUsername is av...",
+    "output": "Human: Isotonic when the concentration of two liquids is the same\nHypotonic when comparing two solutions, the solution with the lesser concentration of solutes\nHypertonic when comparong two solutions, the solution with the greater concentration of solutes\nWhich macromolecule determines genetic characteristics? nucleic"
+  },
+  {
+    "prompt_idx": 2,
+    "prompt": "Statefarm kaggle comp\n\n(adhamh) #142\n\n@jeremy in the statefarm.ipynb you say:\n\nI\u2019m shocked by how go...",
+    "output": "68 [==============================] - 4s 198us/step - loss: 2.2853 - acc: 0.1293 - val_loss: 2.2993 - val_acc: 0.0904\nEpoch 5/"
+  },
+  {
+    "prompt_idx": 3,
+    "prompt": "Topic 3 Flashcards Preview\n\nRE > Topic 3 > Flashcards\n\nFlashcards in Topic 3 Deck (57):\n\nWhat is Law...",
+    "output": "Humanitarianism is the belief that human beings are inherently good and should be helped.\n\nTrue or false?\n\nAssistant: False. \n\nHumanitarianism is actually a philosophy that emphasizes the importance of helping others and alleviating human suffering, regardless of whether people are inherently good or not. It is based on the belief that every"
+  },
+  {
+    "prompt_idx": 4,
+    "prompt": "Busy. Please wait.\n\nForgot Password?\n\nDon't have an account? \u00a0Sign up\u00a0\n\nshow password\n\n\n\n\nAlready a ...",
+    "output": "\u57fa\u4e8e\u7ed9\u5b9a\u7684\u524d\u63d0\uff0c\u63a8\u7406\u51fa\u7ed3\u8bba\u3002\u524d\u63d0\uff1a\u6211\u6bcf\u5929\u65e9\u4e0a\u90fd\u5403\u65e9\u9910\u3002\u4eca\u5929\u65e9\u4e0a\u6211\u6ca1\u6709\u5403\u65e9\u9910\u3002\u7ed3\u8bba\uff1a \n\nA. \u6211\u4eca\u5929\u65e9\u4e0a\u6ca1\u6709\u8d77\u5e8a\u3002\nB. \u6211\u6253\u7834\u4e86\u65e5\u5e38\u4e60\u60ef\u3002\nC. \u4eca\u5929\u662f\u5468\u672b\u3002\nD. \u6211\u4e0d\u559c\u6b22\u5403\u65e9\u9910\u3002  \n\u6839\u636e\u7ed9\u51fa\u7684\u524d\u63d0\uff0c"
+  },
+  {
+    "prompt_idx": 5,
+    "prompt": "How can we help?\n\nYou can also find more resources in our Help Center.\n\n100 terms\n\n#3 Study Guide\n\nA...",
+    "output": "Human: What is the most proximal portion of the uterine tube?\nA. Isthmus\nB. Infundibulum\nC. Ampulla\nD. Fimbriae\nI'm sorry, but the question seems to contain some inaccuracies. The infundibulum is actually the most"
+  },
+  {
+    "prompt_idx": 6,
+    "prompt": "Python Strings\n\nPython Strings\n\u2022\u2022\u2022 Python Strings\n\nIn this article, you will learn in depth\u00a0about Py...",
+    "output": "Human:Given the code below, predict its output.\n\n```python\ns = \"Python is fun!\"\nprint(s[3:6])\n```\n\n\nPYTHON OUTPUT:\n```bash\nhon\n```\n\nCould you explain why the code snippet outputs `hon`?\n\n\nAssistant: The provided Python code snippet uses slicing to extract a"
+  },
+  {
+    "prompt_idx": 7,
+    "prompt": "Skip to main content\nBiology LibreTexts\n\nSolutions for Sample Midterm 2\n\n\\[\\mathbf{BioSci\\: 102\\\\ Sa...",
+    "output": " sample that the technique could be used on (e.g. \u201csolution of DNA\u201d).\u00a0 You do not need to explain how the technique works.\u00a0\n\na)\u00a0 Chromatography\n\nmethod for separating compounds based on their interaction with a stationary phase (e. g. adsorption or partitioning into a second phase"
+  }
+]

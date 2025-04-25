@@ -1,0 +1,50 @@
+[
+  {
+    "prompt_idx": 0,
+    "prompt_token_count": 300,
+    "prompt": "What is a transfer of electrons?\n\n1 Answer\nDec 28, 2015\n\n\nTransfer of electron in chemistry is the p...",
+    "output": "ent bonds are for non-metals. However there are exceptions.\n\nNote: Electrons are extremely small, the mass is so small that is considered zero and they are very fast, as per QM theories.\n\nHope this helps."
+  },
+  {
+    "prompt_idx": 1,
+    "prompt_token_count": 300,
+    "prompt": "TEAM-ADA Archives\n\nTeam Ada: Ada Programming Language Advocacy\n\n\nOptions: Use Classic View\n\nUse Mono...",
+    "output": " there's nothing intrinsically \"meaningless\" \nabout comparing access types.\n\nBut I don't think your examples demonstrate your point.  For instance:\n\n\u00a0\u00a0\u00a0if A = C then -- Must be false.\n\nIs that really true?  The value of A is an integer address.  Suppose \nthat the address"
+  },
+  {
+    "prompt_idx": 2,
+    "prompt_token_count": 300,
+    "prompt": "Explore BrainMass\n\nphysiology and psychology of stress\n\nDefine the concept of stress?\n\nExplain the p...",
+    "output": " APA references included. A sample APA article is also included."
+  },
+  {
+    "prompt_idx": 3,
+    "prompt_token_count": 300,
+    "prompt": "Jacob Larsen Jacob Larsen - 1 year ago 72\nJavascript Question\n\nBasic JavaScript - How to make a cert...",
+    "output": " don't need to wait for user input, or even worse, have a while loop running on your script.\n\nHope that helps! =)\n\nEdit: Added if statement for detecting only style change in \"myBody\" element. See here for more info. Also, see the documentation for DOM Mutation Events here. If you"
+  },
+  {
+    "prompt_idx": 4,
+    "prompt_token_count": 300,
+    "prompt": "Paddy Clarke Ha Ha Ha Multiple Choice Test Questions\n\nBuy the Paddy Clarke Ha Ha Ha Lesson Plans\n\n1....",
+    "output": ".\n(c) Cigarette.\n(d) Matches.\n\n9. Why do Paddy and his friends want to be in the same class as the older students?\n(a) To play bigger games.\n(b) To learn more.\n(c) To be closer to home.\n(d) To fight them.\n\n10. Where do"
+  },
+  {
+    "prompt_idx": 5,
+    "prompt_token_count": 300,
+    "prompt": "Michelson-Morley experiment\n\nAim of the Michelson-Morley experiment: The Michelson-Morley experiment...",
+    "output": "\n\nSpeed of light and Special Relativity\n\nSpeed of light and Special Relativity\n\nIn this topic we are going to study about the speed of light and its impact on special relativity.\n\nAs you all know that speed of light (c) = 3 x 108 m/s which is constant and cannot"
+  },
+  {
+    "prompt_idx": 6,
+    "prompt_token_count": 300,
+    "prompt": "Sacred Texts\u00a0 Classics\u00a0 Index\u00a0 Previous\u00a0 Next\u00a0\n\nSection 2\n\n2. What is this other place and how it is...",
+    "output": " ... 4-587614336272505009041141143415558502967403080272313252517644"
+  },
+  {
+    "prompt_idx": 7,
+    "prompt_token_count": 300,
+    "prompt": "Bark damage to eastern redbud\n\n\n\nI have an Eastern Redbud, the wind broke off 2 large branches, is t...",
+    "output": "\n\n\nAnswer last updated on 14-03-2013.\n\nRate this Answer\n3 people found this answer useful on 03/25/2013.\n\nRelated Questions\n\nAnswered by Master Gardener Volunteer\n\nAnswered by Master Gardener Volunteer\n\nAnswered by Master Gard"
+  }
+]

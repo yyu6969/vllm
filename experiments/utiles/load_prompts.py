@@ -55,3 +55,32 @@ def load_prompts_from_json(path: str) -> List[str]:
             return prompts_data
     except FileNotFoundError:
         raise FileNotFoundError(f"Prompts file {path} not found. Please create the file first.")
+
+def load_normalized_prompts(path: str) -> tuple:
+    """
+    Load normalized prompts from a JSON file
+    
+    Args:
+        path: Path to JSON file with normalized prompts
+        
+    Returns:
+        tuple: (prompts, token_counts, target_token_count)
+    """
+    try:
+        with open(path, 'r') as f:
+            data = json.load(f)
+            
+        prompts = data.get('prompts', [])
+        token_counts = data.get('token_counts', [])
+        target_length = data.get('target_length', 0)
+        
+        print(f"Loaded {len(prompts)} normalized prompts from {path}")
+        print(f"All prompts have exactly {target_length} tokens: {all(count == target_length for count in token_counts)}")
+        
+        return prompts, token_counts, target_length
+    except FileNotFoundError:
+        print(f"Error: Normalized prompts file {path} not found.")
+        return [], [], 0
+    except Exception as e:
+        print(f"Error loading normalized prompts from {path}: {e}")
+        return [], [], 0

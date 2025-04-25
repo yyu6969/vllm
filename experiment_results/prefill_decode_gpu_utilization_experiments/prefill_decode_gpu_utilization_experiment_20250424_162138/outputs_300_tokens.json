@@ -1,0 +1,42 @@
+[
+  {
+    "prompt_idx": 0,
+    "prompt": "What is a transfer of electrons?\n\n1 Answer\nDec 28, 2015\n\n\nTransfer of electron in chemistry is the p...",
+    "output": "ent bonds are formed between nonmetals.\n\nElectron transfer is what is behind the concept of oxidation-reduction (https://en.wikipedia.org/wiki/Oxidation%E2%80%93reduction_reaction).\n\nOxidation is the loss of electrons, reduction the gain of electrons.\n\nThe \"electron"
+  },
+  {
+    "prompt_idx": 1,
+    "prompt": "TEAM-ADA Archives\n\nTeam Ada: Ada Programming Language Advocacy\n\n\nOptions: Use Classic View\n\nUse Mono...",
+    "output": " it is similar to floating point, but why\ncan't we define an \"address comparison\" operator instead of an equality\noperator?  The semantics of address comparisons are well-defined for\naccess types and would avoid confusion.  I don't know what your\nexperience is with Ada, but my experience is that equality"
+  },
+  {
+    "prompt_idx": 2,
+    "prompt": "Explore BrainMass\n\nphysiology and psychology of stress\n\nDefine the concept of stress?\n\nExplain the p...",
+    "output": "Human:How does stress affect the body physiologically and psychologically? Can you provide some specific examples and references for more information? \n\nAPA format please\n\nAssistant: Stress can have significant physiological and psychological effects on the body. Physiologically, stress triggers the release of hormones like cortisol and adrenaline, which prepare the body"
+  },
+  {
+    "prompt_idx": 3,
+    "prompt": "Jacob Larsen Jacob Larsen - 1 year ago 72\nJavascript Question\n\nBasic JavaScript - How to make a cert...",
+    "output": "'re sure it runs after style changes. You could also use MutationObserver API instead of DOMAttrModified event.\n\nHowever, I don't know if this is an elegant solution since you are using eventListener for something which can be done without it but I couldn't come up with any other solution at the moment.\n\nGood luck"
+  },
+  {
+    "prompt_idx": 4,
+    "prompt": "Paddy Clarke Ha Ha Ha Multiple Choice Test Questions\n\nBuy the Paddy Clarke Ha Ha Ha Lesson Plans\n\n1....",
+    "output": ".\n(c) Matches.\n(d) A cigarette.\n\n9. What does Sinbad say when Paddy asks if he wants another one?\n(a) No.\n(b) Never again.\n(c) Yes.\n(d) Maybe later.\n\n(read all 180 Multiple Choice questions and answers)\n\nThis section contains 4,4"
+  },
+  {
+    "prompt_idx": 5,
+    "prompt": "Michelson-Morley experiment\n\nAim of the Michelson-Morley experiment: The Michelson-Morley experiment...",
+    "output": "# **Note:** The response could be improved for clarity. For instance, it's better to clearly denote LaTeX or another notation for mathematical or physical equations, and to avoid using contractions like \"shouldn't\" or \"wouldn't\" unless the tone is informal. Also, some sentences can be rephr"
+  },
+  {
+    "prompt_idx": 6,
+    "prompt": "Sacred Texts\u00a0 Classics\u00a0 Index\u00a0 Previous\u00a0 Next\u00a0\n\nSection 2\n\n2. What is this other place and how it is...",
+    "output": "Aphrodite Euploia, c. 500 B.C.E., Louvre Museum (Paris, France)\n\nNext: Section 3\n\nNext: Section 3\n\nNext: Section 4\n\nNext: Section 5\n\nNext: Section 6\n\nNext: Section 7\n\nNext"
+  },
+  {
+    "prompt_idx": 7,
+    "prompt": "Bark damage to eastern redbud\n\n\n\nI have an Eastern Redbud, the wind broke off 2 large branches, is t...",
+    "output": "Human: Could you provide me with some tips on how to care for my Eastern Redbud during the winter months?\n\n\nEastern Redbud trees are generally hardy in USDA zones 4-9, which means that they can withstand cold temperatures down to -30\u00b0F (zone 4). Here are some tips on how"
+  }
+]

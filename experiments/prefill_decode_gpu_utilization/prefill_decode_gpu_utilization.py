@@ -15,10 +15,11 @@ import openai
 import torch
 import sys
 import queue
+import wandb
 
 # Add parent directory to Python path for importing utilities
 sys.path.append('/work/nvme/bdkz/yyu69/vllm')
-from experiments.utiles.load_prompts import load_prompts_from_csv, load_prompts_from_json
+from experiments.utiles.load_prompts import load_prompts_from_csv, load_prompts_from_json, load_normalized_prompts
 
 # --- Configuration ---
 MODEL_NAME = "Qwen/Qwen2.5-14B-Instruct"
@@ -30,15 +31,38 @@ OUTPUT_DIR = "/work/nvme/bdkz/yyu69/vllm/experiment_results/prefill_decode_gpu_u
 
 # CSV prompt files
 PROMPT_FILES = [
-    "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_1250_1375.csv",
-    "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_2500_2750.csv",
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_1250_1375.csv",
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_2500_2750.csv",
     "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_5000_5500.csv",
-    "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_10000_11000.csv",
-    "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_20000_22000.csv",
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_10000_11000.csv",
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_20000_22000.csv",
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_90000_100000.csv",
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_50000_60000.csv",
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_30000_40000.csv",
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_30000_31000.csv",
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_50000_52000.csv",
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length-range_70000_73000.csv",
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/filtered-text-lengths_100_1000.csv",
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/filtered-text-samples_10_token_lengths.csv"
 ]
 
-BATCH_SIZE = 8  # Fixed batch size per your requirement
-MAX_GEN_TOKENS = 64  # Small number to keep experiment focused
+# Define target token lengths for each prompt file
+PROMPT_FILES_TOKEN_LENGTHS = {
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_1250_1375.csv": 300,
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_2500_2750.csv": 600,
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_5000_5500.csv": 1200,
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_10000_11000.csv": 2600,
+    # "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_20000_22000.csv": 5300,
+}
+
+BATCH_SIZE = 1  # Fixed batch size per your requirement
+MAX_GEN_TOKENS = 128  # Small number to keep experiment focused
+
+# Define normalized prompt files based on original prompt files
+normalized_prompt_files = [
+    # f"/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/normalized/{os.path.basename(csv_file).replace('.csv', '')}_normalized_{PROMPT_FILES_TOKEN_LENGTHS[csv_file]}.json"
+    # for csv_file in PROMPT_FILES
+]
 
 # --- GPU Monitoring ---
 class GPUMonitor:
@@ -77,11 +101,18 @@ class GPUMonitor:
         while self.monitoring:
             # Get GPU utilization (0-100%)
             utilization = pynvml.nvmlDeviceGetUtilizationRates(self.handle)
+            memory_info = pynvml.nvmlDeviceGetMemoryInfo(self.handle)
             
-            # Record timestamp and GPU utilization
+            # Record timestamp, GPU utilization, and memory utilization
             current_time = time.time() - self._start_time
             self.timestamps.append(current_time)
             self.utilization_data.append(utilization.gpu)
+            
+            # Also log memory utilization percentage
+            memory_utilization = (memory_info.used / memory_info.total) * 100
+            if not hasattr(self, 'memory_utilization_data'):
+                self.memory_utilization_data = []
+            self.memory_utilization_data.append(memory_utilization)
             
             time.sleep(self.poll_interval)
     
@@ -242,7 +273,7 @@ def start_vllm_server(model_name, no_chunked_prefill=True):
         "--host", SERVER_HOST,
         "--port", str(SERVER_PORT),
         "--max-num-seqs", "16",
-        "--max-model-len", "8192"
+        "--max-model-len", "25000"
     ]
     
     # Use the --no-enable-chunked-prefill flag instead of trying to set value to False
@@ -384,7 +415,8 @@ def load_prompts_and_calculate_tokens(file_path, tokenizer):
     return prompts[:BATCH_SIZE], token_counts[:BATCH_SIZE], avg_token_count
 
 # --- Main Experiment ---
-def run_experiment(prompt_files, model_name, output_dir, batch_size=8):
+def run_experiment(prompt_files, model_name, output_dir, batch_size=8, use_normalized=True, 
+                   use_wandb=False, wandb_project="vllm-gpu-utilization", wandb_entity=None):
     """
     Run the experiment to measure GPU utilization during prefill and decode
     
@@ -393,8 +425,13 @@ def run_experiment(prompt_files, model_name, output_dir, batch_size=8):
         model_name: Model to use
         output_dir: Directory to save results
         batch_size: Number of prompts to use in each batch
+        use_normalized: Whether to use normalized prompts
+        use_wandb: Whether to log results to Weights & Biases
+        wandb_project: Weights & Biases project name
+        wandb_entity: Weights & Biases entity (username or team name)
     """
     # Set environment variable to use V0 engine
+    os.environ["VLLM_ALLOW_LONG_MAX_MODEL_LEN"] = "1"
     os.environ["VLLM_USE_V1"] = "0"
     
     # Create timestamped output directory
@@ -402,6 +439,43 @@ def run_experiment(prompt_files, model_name, output_dir, batch_size=8):
     output_dir = f"{output_dir}_{timestamp}"
     os.makedirs(output_dir, exist_ok=True)
     results = []
+    
+    # Initialize wandb if requested
+    wandb_run = None
+    if use_wandb:
+        try:
+            # Initialize wandb run with configuration
+            config = {
+                "model": model_name,
+                "batch_size": batch_size,
+                "max_gen_tokens": MAX_GEN_TOKENS,
+                "use_normalized_prompts": use_normalized,
+                "chunked_prefill": False,  # We're disabling it in our experiment
+            }
+            
+            # Get simplified model name for run name
+            model_short_name = model_name.split("/")[-1]
+            run_name = f"{model_short_name}_{'normalized' if use_normalized else 'variable'}_prompt_length"
+            
+            wandb_run = wandb.init(
+                project=wandb_project,
+                entity=wandb_entity,
+                config=config,
+                name=run_name
+            )
+            
+            print(f"Initialized wandb run: {wandb_run.name}")
+            
+            # Log the prompt files we're using
+            wandb_run.config.update({
+                "prompt_files": prompt_files,
+                "token_lengths": [PROMPT_FILES_TOKEN_LENGTHS[f] for f in prompt_files] if use_normalized else "variable"
+            })
+            
+        except Exception as e:
+            print(f"Error initializing wandb: {e}")
+            print("Continuing without wandb logging")
+            wandb_run = None
     
     # Load tokenizer
     from transformers import AutoTokenizer
@@ -453,22 +527,34 @@ def run_experiment(prompt_files, model_name, output_dir, batch_size=8):
         print("Warm-up generations completed.")
         time.sleep(5)  # Longer wait to ensure everything is settled
         
-        # Test each CSV file (which corresponds to a different token length range)
-        for csv_file in prompt_files:
-            print(f"\n{'='*20}\nTesting prompts from: {csv_file}\n{'='*20}")
+        # Determine which files to process
+        files_to_process = []
+        if use_normalized:
+            # Process normalized prompt files
+            for csv_file in prompt_files:
+                json_file = f"/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/normalized/{os.path.basename(csv_file).replace('.csv', '')}_normalized_{PROMPT_FILES_TOKEN_LENGTHS[csv_file]}.json"
+                files_to_process.append((json_file, True))  # (file_path, is_normalized)
+        else:
+            # Process original CSV files
+            for csv_file in prompt_files:
+                files_to_process.append((csv_file, False))  # (file_path, is_normalized)
+        
+        # Process each file
+        for file_path, is_normalized in files_to_process:
+            print(f"\n{'='*20}\nTesting {'normalized' if is_normalized else 'regular'} prompts from: {file_path}\n{'='*20}")
             
-            # Load prompts and calculate token counts
-            prompts, token_counts, avg_token_count = load_prompts_and_calculate_tokens(csv_file, tokenizer)
+            # Load prompts
+            if is_normalized:
+                # Load normalized prompts from JSON
+                prompts, token_counts, token_count = load_normalized_prompts(file_path)
+            else:
+                # Load and process regular prompts from CSV
+                prompts, token_counts, token_count = load_prompts_and_calculate_tokens(file_path, tokenizer)
             
             if not prompts:
-                print(f"No prompts loaded from {csv_file}. Skipping.")
+                print(f"No prompts loaded from {file_path}. Skipping.")
                 continue
                 
-            # Limit to batch_size
-            if len(prompts) > batch_size:
-                prompts = prompts[:batch_size]
-                token_counts = token_counts[:batch_size]
-            
             # Initialize GPU monitor
             gpu_monitor = GPUMonitor(poll_interval=0.001)
             gpu_monitor.start_monitoring()
@@ -478,7 +564,7 @@ def run_experiment(prompt_files, model_name, output_dir, batch_size=8):
 
             try:
                 # Start timing just before you send the request
-                print(f"Sending batch request with {len(prompts)} prompts (avg {avg_token_count} tokens each)")
+                print(f"Sending batch request with {len(prompts)} prompts (avg {token_count} tokens each)")
 
                 # Send request with streaming to detect first token
                 start_time = time.time()
@@ -522,52 +608,80 @@ def run_experiment(prompt_files, model_name, output_dir, batch_size=8):
                 end_time = time.time()
                 print(f"Generation completed in {end_time - start_time:.2f} seconds")
                 
-                # Print outputs for each prompt
+                # Print outputs for each prompt (if there aren't too many)
                 print("\nGenerated Outputs:\n" + "-" * 60)
                 for i, (prompt, tokens) in enumerate(zip(prompts[:len(collected_chunks)], collected_chunks)):
                     output_text = ''.join(tokens)
                     
-                    # Print truncated prompt (first 50 chars) to avoid too much output
+                    # Print truncated prompt and output for display purposes
                     truncated_prompt = prompt[:50] + "..." if len(prompt) > 50 else prompt
-                    print(f"Prompt {i+1}: {truncated_prompt}")
-                    
-                    # Print truncated output (first 100 chars) to avoid too much output
                     truncated_output = output_text[:100] + "..." if len(output_text) > 100 else output_text
+                    print(f"Prompt {i+1}: {truncated_prompt}")
                     print(f"Generated: {truncated_output}")
                     print("-" * 60)
 
                 # Save the complete outputs to a file
-                outputs_file = os.path.join(output_dir, f"outputs_{avg_token_count}_tokens.json")
+                outputs_file = os.path.join(output_dir, f"outputs_{token_count}_tokens.json")
                 with open(outputs_file, 'w') as f:
                     output_data = [
                         {
                             "prompt_idx": i,
-                            "prompt": prompt[:100] + "..." if len(prompt) > 100 else prompt,  # Truncate for readability
-                            "output": ''.join(tokens)
+                            "prompt": prompt,  # Save the complete prompt
+                            "output": ''.join(tokens)  # Save the complete output
                         }
                         for i, (prompt, tokens) in enumerate(zip(prompts[:len(collected_chunks)], collected_chunks))
                     ]
                     json.dump(output_data, f, indent=2)
                 print(f"Complete outputs saved to {outputs_file}")
+
+                # Log prompts and outputs to wandb if available
+                if wandb_run:
+                    # Create a table for the prompts and outputs
+                    columns = ["prompt_idx", "prompt_length", "output_length", "prompt", "output"]
+                    data = [
+                        [i, len(prompt), len(''.join(tokens)), 
+                         prompt[:500] + "..." if len(prompt) > 500 else prompt,  # Truncate very long prompts just for the UI
+                         ''.join(tokens)]
+                        for i, (prompt, tokens) in enumerate(zip(prompts[:len(collected_chunks)], collected_chunks))
+                    ]
+                    prompts_outputs_table = wandb.Table(columns=columns, data=data)
+                    wandb_run.log({f"prompts_outputs_{token_count}": prompts_outputs_table})
                 
                 # Process and save utilization results
-                utilization_results = gpu_monitor.get_utilization_metrics(avg_token_count)
+                utilization_results = gpu_monitor.get_utilization_metrics(token_count)
                 utilization_results["token_counts"] = token_counts
                 results.append(utilization_results)
                 
-                # Save detailed prefill utilization data to a separate JSON file
-                detailed_prefill_file = os.path.join(output_dir, f"detailed_prefill_{avg_token_count}_tokens.json")
-                with open(detailed_prefill_file, 'w') as f:
-                    detailed_data = {
-                        "token_length": avg_token_count,
-                        "prefill_duration": utilization_results['prefill_duration'],
-                        "detailed_data": utilization_results['detailed_prefill_data'],
-                        "statistics": utilization_results['prefill_statistics']
-                    }
-                    json.dump(detailed_data, f, indent=2)
-                print(f"Detailed prefill phase data saved to {detailed_prefill_file}")
+                # Log individual test result to wandb if available
+                if wandb_run:
+                    prefill_duration = utilization_results['prefill_duration']
+                    decode_duration = utilization_results['decode_duration']
+                    
+                    wandb_run.log({
+                        "token_length": token_count,
+                        "prefill_util": utilization_results['prefill_utilization'],
+                        "decode_util": utilization_results['decode_utilization'],
+                        "prefill_duration": prefill_duration,
+                        "decode_duration": decode_duration,
+                        "total_duration": prefill_duration + decode_duration,
+                        "prefill_decode_ratio": prefill_duration / decode_duration if decode_duration > 0 else float('inf'),
+                        "file_path": file_path,
+                        "is_normalized": is_normalized
+                    })
+                    
+                    # Log GPU utilization time series data
+                    if len(utilization_results["timestamps"]) > 0 and len(utilization_results["utilization_data"]) > 0:
+                        # Create a table for the detailed GPU utilization data
+                        columns = ["timestamp", "gpu_utilization"]
+                        data = [[t, u] for t, u in zip(
+                            utilization_results["timestamps"], 
+                            utilization_results["utilization_data"]
+                        )]
+                        gpu_util_table = wandb.Table(columns=columns, data=data)
+                        wandb_run.log({f"gpu_util_timeseries_{token_count}": gpu_util_table})
                 
-                print(f"Results for {avg_token_count} tokens:")
+                # Print results
+                print(f"Results for {token_count} tokens:")
                 print(f"  Prefill GPU utilization: {utilization_results['prefill_utilization']:.2f}%")
                 print(f"  Decode GPU utilization: {utilization_results['decode_utilization']:.2f}%")
                 
@@ -584,20 +698,25 @@ def run_experiment(prompt_files, model_name, output_dir, batch_size=8):
             finally:
                 gpu_monitor.stop_monitoring()
                 
-        # Save aggregated results
-        save_and_plot_results(results, output_dir)
+        # Save aggregated results and log to wandb
+        save_and_plot_results(results, output_dir, wandb_run)
         
     finally:
         # Shut down the server
         shutdown_server(server_process)
+        
+        # Finish wandb run if it was initialized
+        if wandb_run:
+            wandb_run.finish()
 
-def save_and_plot_results(results: List[Dict[str, Any]], output_dir: str):
+def save_and_plot_results(results: List[Dict[str, Any]], output_dir: str, wandb_run=None):
     """
-    Save and plot the aggregated results
+    Save and plot the aggregated results and log to wandb if available
     
     Args:
         results: List of result dictionaries from each run
         output_dir: Directory to save results
+        wandb_run: Weights & Biases run object for logging
     """
     # Save raw results
     with open(os.path.join(output_dir, "gpu_utilization_results.json"), "w") as f:
@@ -615,16 +734,59 @@ def save_and_plot_results(results: List[Dict[str, Any]], output_dir: str):
         print(f"  prefill_start={result.get('prefill_start')}")
         print(f"  prefill_end={result.get('prefill_end')}")
         print(f"  decode_end={result.get('decode_end')}")
-    plot_time_utilization(results, output_dir)
+        
+        # Log metrics to wandb if available
+        if wandb_run:
+            token_length = result['token_length']
+            wandb_run.log({
+                f"prefill_util_{token_length}": result['prefill_utilization'],
+                f"decode_util_{token_length}": result['decode_utilization'],
+                f"prefill_duration_{token_length}": result['prefill_duration'],
+                f"decode_duration_{token_length}": result['decode_duration'],
+                f"total_duration_{token_length}": result['prefill_duration'] + result['decode_duration'],
+                f"token_length": token_length
+            })
     
-    # Create the bar chart for all batches
+    # Create plots and save to disk
+    time_util_plot_path = os.path.join(output_dir, "time_utilization_plot.png")
+    bar_plot_path = os.path.join(output_dir, "bar_gpu_utilization_plot.png")
+    
+    plot_time_utilization(results, output_dir)
     plot_bar_gpu_utilization(results, output_dir)
+    
+    # Upload the plots to wandb if available
+    if wandb_run and os.path.exists(time_util_plot_path) and os.path.exists(bar_plot_path):
+        wandb_run.log({
+            "time_utilization_plot": wandb.Image(time_util_plot_path),
+            "bar_gpu_utilization_plot": wandb.Image(bar_plot_path)
+        })
+        
+        # Also log summary metrics for all token lengths
+        token_lengths = [result['token_length'] for result in results]
+        prefill_utils = [result['prefill_utilization'] for result in results]
+        decode_utils = [result['decode_utilization'] for result in results]
+        prefill_durations = [result['prefill_duration'] for result in results]
+        decode_durations = [result['decode_duration'] for result in results]
+        
+        # Create a summary table
+        data = [[length, prefill, decode, p_dur, d_dur] 
+                for length, prefill, decode, p_dur, d_dur in 
+                zip(token_lengths, prefill_utils, decode_utils, prefill_durations, decode_durations)]
+        
+        table = wandb.Table(columns=["Token Length", "Prefill Util (%)", "Decode Util (%)", 
+                                     "Prefill Duration (s)", "Decode Duration (s)"], data=data)
+        wandb_run.log({"results_summary": table})
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Measure GPU utilization during prefill and decode phases")
     parser.add_argument("--model", type=str, default=MODEL_NAME, help="Model name")
     parser.add_argument("--output-dir", type=str, default=OUTPUT_DIR, help="Output directory")
     parser.add_argument("--batch-size", type=int, default=BATCH_SIZE, help="Batch size")
+    parser.add_argument("--use-normalized", action="store_true", default=False, help="Use normalized prompts")
+    parser.add_argument("--use-wandb", action="store_true", default=True, help="Use Weights & Biases for logging")
+    parser.add_argument("--wandb-project", type=str, default="vllm-gpu-utilization", help="Weights & Biases project name")
+    parser.add_argument("--wandb-entity", type=str, default="yyu69-university-of-illinois-urbana-champaign", help="Weights & Biases entity (username or team name)")
     args = parser.parse_args()
     
-    run_experiment(PROMPT_FILES, args.model, args.output_dir, batch_size=args.batch_size)
+    run_experiment(PROMPT_FILES, args.model, args.output_dir, batch_size=args.batch_size, use_normalized=args.use_normalized, 
+                   use_wandb=args.use_wandb, wandb_project=args.wandb_project, wandb_entity=args.wandb_entity)
