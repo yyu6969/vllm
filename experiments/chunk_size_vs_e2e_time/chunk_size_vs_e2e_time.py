@@ -18,7 +18,7 @@ from experiments.utiles.load_prompts import load_prompts_from_csv, load_prompts_
 from experiments.utiles.plot_e2e_time import plot_e2e_time_chart_from_json
 
 # --- 1. Define Parameters ---
-MODEL_NAMES = ["Qwen/Qwen2.5-3B-Instruct"]
+MODEL_NAMES = ["Qwen/Qwen2.5-14B-Instruct"]
 SERVER_HOST = "127.0.0.1"
 SERVER_PORT = 8000
 SERVER_URL = f"http://{SERVER_HOST}:{SERVER_PORT}"
@@ -28,13 +28,13 @@ HEALTH_CHECK_URL = f"{SERVER_URL}/health"
 # Your different sets of prompts with different token lengths
 PROMPT_CONFIGS = [
     {
-        "path": "/work/nvme/bdkz/yyu69/vllm/data/long-prompts-6000_6500_100.csv",
-        "column_name": "prompt",
-        "chunk_sizes": [16, 32, 64, 128, 256, 512, 1024, 2048]
+        "path": "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_20000_22000.csv",
+        "column_name": "text",
+        "chunk_sizes": [16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192]
     },
 ]
 
-GENERATION_PARAMS = {"max_tokens": 512, "temperature": 0.8, "top_p": 0.95}
+GENERATION_PARAMS = {"max_tokens": 64, "temperature": 0.8, "top_p": 0.95}
 
 # Exact names of the metrics you want to average
 TARGET_METRIC_NAMES = [
@@ -46,8 +46,9 @@ TARGET_METRIC_NAMES = [
 
 OUTPUT_DIR = "/work/nvme/bdkz/yyu69/vllm/experiment_results/chunk_size_vs_e2e_time_experiments"
 
-BATCH_SIZE = 8
-NUM_RUNS_PER_BATCH = 3
+BATCH_SIZE = 1
+CONCURRENCY_LEVEL = 10
+NUM_RUNS_PER_BATCH = 1
 
 # Generate a timestamp for the filename - creating this at the start
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -362,6 +363,7 @@ try:
         for config in PROMPT_CONFIGS:
             # Load prompts from the specified path
             all_prompts = load_prompts_from_csv(config["path"], column_name=config["column_name"])
+            # all_prompts = load_prompts_from_json(config["path"])
 
             # Make sure we have enough unique prompts for all runs
             required_prompts = BATCH_SIZE * NUM_RUNS_PER_BATCH
@@ -421,33 +423,33 @@ try:
                 if not metrics_zeroed:
                     print("WARNING: Initial metrics are not zero. Server may have residual data.")
                 
-                # Add single warm-up run before starting measurements
-                print(f"\n{'-'*10} Performing GPU warm-up {'-'*10}")
-                # Use the first batch of prompts for warm-up
-                warmup_prompts = all_prompts[:BATCH_SIZE]
-                print(f"Using first {len(warmup_prompts)} prompts for warm-up")
+                # # Add single warm-up run before starting measurements
+                # print(f"\n{'-'*10} Performing GPU warm-up {'-'*10}")
+                # # Use the first batch of prompts for warm-up
+                # warmup_prompts = all_prompts[:BATCH_SIZE]
+                # print(f"Using first {len(warmup_prompts)} prompts for warm-up")
 
-                # Single warm-up run to initialize GPU and compile any needed kernels
-                print("Executing warm-up run...")
-                warm_up_result = send_single_request(warmup_prompts, model_name, GENERATION_PARAMS)
-                if not warm_up_result["success"]:
-                    print(f"WARNING: Warm-up request failed: {warm_up_result.get('error', 'Unknown error')}")
-                else:
-                    print("Warm-up request completed successfully")
+                # # Single warm-up run to initialize GPU and compile any needed kernels
+                # print("Executing warm-up run...")
+                # warm_up_result = send_single_request(warmup_prompts, model_name, GENERATION_PARAMS)
+                # if not warm_up_result["success"]:
+                #     print(f"WARNING: Warm-up request failed: {warm_up_result.get('error', 'Unknown error')}")
+                # else:
+                #     print("Warm-up request completed successfully")
 
-                # Allow system to stabilize after warm-up
-                print("Waiting for system to stabilize...")
-                time.sleep(5)  
+                # # Allow system to stabilize after warm-up
+                # print("Waiting for system to stabilize...")
+                # time.sleep(5)  
 
-                # Get clean baseline metrics AFTER warm-up
-                print("Getting clean baseline metrics after warm-up...")
+                # # Get clean baseline metrics AFTER warm-up
+                # print("Getting clean baseline metrics after warm-up...")
                 baseline_metrics = scrape_and_parse_metrics(TARGET_METRIC_NAMES)
 
-                print(f"{'-'*10} Warm-up complete, starting actual measurements {'-'*10}")
+                # print(f"{'-'*10} Warm-up complete, starting actual measurements {'-'*10}")
 
                 # Adjust the starting index for actual runs to skip warm-up prompts
                 # Start using prompts after the first BATCH_SIZE used for warm-up
-                warmup_offset = BATCH_SIZE
+                warmup_offset = 0
 
                 # Initialize results for this chunk size
                 all_e2e_times = []

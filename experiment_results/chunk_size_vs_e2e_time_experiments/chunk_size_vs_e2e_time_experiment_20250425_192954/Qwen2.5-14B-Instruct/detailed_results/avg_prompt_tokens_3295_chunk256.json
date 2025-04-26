@@ -1,0 +1,26 @@
+{
+  "experiment_info": {
+    "prompt_set": "avg_prompt_tokens_3295",
+    "chunk_size": 256,
+    "model": "Qwen/Qwen2.5-14B-Instruct",
+    "generation_params": {
+      "max_tokens": 64,
+      "temperature": 0.8,
+      "top_p": 0.95
+    }
+  },
+  "requests": [
+    {
+      "run_index": 0,
+      "batch_size": 1,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 2.2462003231048584,
+        "vllm:request_prefill_time_seconds": 0.5804331181570888,
+        "vllm:request_decode_time_seconds": 1.664559650234878,
+        "vllm:request_inference_time_seconds": 2.244992768391967,
+        "time_between_tokens": 0.02600874453491997
+      }
+    }
+  ]
+}
