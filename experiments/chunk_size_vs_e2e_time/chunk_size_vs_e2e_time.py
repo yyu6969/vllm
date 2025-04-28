@@ -15,7 +15,7 @@ from datetime import datetime
 import sys
 sys.path.append('/work/nvme/bdkz/yyu69/vllm')
 from experiments.utiles.load_prompts import load_prompts_from_csv, load_prompts_from_json
-from experiments.utiles.plot_e2e_time import plot_e2e_time_chart_from_json
+from experiments.utiles.plot_e2e_time import plot_e2e_time_chart_from_json, plot_ttft_time_chart_from_json, plot_tbt_time_chart_from_json
 
 # --- 1. Define Parameters ---
 MODEL_NAMES = ["Qwen/Qwen2.5-14B-Instruct"]
@@ -27,14 +27,33 @@ HEALTH_CHECK_URL = f"{SERVER_URL}/health"
 
 # Your different sets of prompts with different token lengths
 PROMPT_CONFIGS = [
+    # {
+    #     "path": "/work/nvme/bdkz/yyu69/vllm/data/chunk_prefill/dataset_2/data_1000.csv",
+    #     "column_name": "prompt",
+    #     "chunk_sizes": [32, 64, 128, 256, 512, 1024]
+    # },
+    # {
+    #     "path": "/work/nvme/bdkz/yyu69/vllm/data/chunk_prefill/dataset_2/data_2000.csv",
+    #     "column_name": "prompt",
+    #     "chunk_sizes": [32, 64, 128, 256, 512, 1024, 2048]
+    # },
+    # {
+    #     "path": "/work/nvme/bdkz/yyu69/vllm/data/chunk_prefill/dataset_2/data_4000.csv",
+    #     "column_name": "prompt",
+    #     "chunk_sizes": [32, 64, 128, 256, 512, 1024, 2048, 4096]
+    # },
     {
-        "path": "/work/nvme/bdkz/yyu69/vllm/data/prefill_decode/select-text-by-length_20000_22000.csv",
-        "column_name": "text",
-        "chunk_sizes": [16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192]
+        "path": "/work/nvme/bdkz/yyu69/vllm/data/chunk_prefill/dataset_2/data_8000.csv",
+        "column_name": "prompt",
+        "chunk_sizes": [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192]
     },
 ]
 
-GENERATION_PARAMS = {"max_tokens": 64, "temperature": 0.8, "top_p": 0.95}
+GENERATION_PARAMS = {
+    "max_tokens": 4096,
+    "temperature": 0.0,
+    "top_p": 1.0
+}
 
 # Exact names of the metrics you want to average
 TARGET_METRIC_NAMES = [
@@ -47,8 +66,7 @@ TARGET_METRIC_NAMES = [
 OUTPUT_DIR = "/work/nvme/bdkz/yyu69/vllm/experiment_results/chunk_size_vs_e2e_time_experiments"
 
 BATCH_SIZE = 1
-CONCURRENCY_LEVEL = 10
-NUM_RUNS_PER_BATCH = 1
+NUM_RUNS_PER_BATCH = 5
 
 # Generate a timestamp for the filename - creating this at the start
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -73,8 +91,9 @@ def start_vllm_server(model_name, chunk_size):
         "--host", SERVER_HOST,
         "--port", str(SERVER_PORT),
         "--enable-chunked-prefill",
+        "--no-enable-prefix-caching",
         "--max-num-batched-tokens", str(chunk_size),
-        "--max-num-seqs", str(8)
+        "--max-num-seqs", str(16)
     ]
     print(f"Starting server with command: {' '.join(command)}")
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, universal_newlines=True, preexec_fn=os.setsid)
@@ -257,21 +276,21 @@ def send_single_request(prompts, model_name, generation_params):
     }
     
     try:
-        # OpenAI client might not support arrays of prompts directly
-        # Check if we need to handle multiple prompts differently
+        # Add min_tokens as extra_body parameter
+        extra_body = {"min_tokens": 4096}
+        
         if isinstance(prompts, list) and len(prompts) > 1:
-            # For batch processing, we might need to handle differently based on API
-            # Check OpenAI client documentation for batch processing
             response = client.completions.create(
                 model=model_name,
-                prompt=prompts,  # Try sending as batch
+                prompt=prompts,
+                extra_body=extra_body,
                 **generation_params
             )
         else:
-            # Single prompt case
             response = client.completions.create(
                 model=model_name,
                 prompt=prompts[0] if isinstance(prompts, list) else prompts,
+                extra_body=extra_body,
                 **generation_params
             )
         
@@ -289,9 +308,9 @@ def send_single_request(prompts, model_name, generation_params):
             output_tokens = count_tokens(model_name, text)
             result["output_token_counts"] = [output_tokens]
             
-            # Print a preview of the response
-            preview = text[:150] + "..." if len(text) > 150 else text
-            print(f"Response preview: {preview}")
+            # Print the prompt and response
+            print(f"\nPROMPT: {prompts[0][:200]}..." if len(prompts[0]) > 200 else f"\nPROMPT: {prompts[0]}")
+            print(f"RESPONSE: {text[:200]}..." if len(text) > 200 else f"RESPONSE: {text}")
             print(f"Output tokens: {output_tokens}")
             
         else:
@@ -304,19 +323,17 @@ def send_single_request(prompts, model_name, generation_params):
                 output_tokens = count_tokens(model_name, text)
                 result["output_token_counts"].append(output_tokens)
             
-            # Print preview of the first few responses
-            print("Response previews:")
-            for i, text in enumerate(responses[:3]):  # First 3 responses
-                preview = text[:150] + "..." if len(text) > 150 else text
-                print(f"  Response {i+1}: {preview}")
-                print(f"  Output tokens: {result['output_token_counts'][i]}")
-            
-            if len(responses) > 3:
-                print(f"  ... and {len(responses)-3} more responses")
+            # Print all prompts and responses in the batch
+            print("\nAll prompts and responses in batch:")
+            for i, (prompt, response) in enumerate(zip(prompts, responses)):
+                print(f"\n--- Pair {i+1}/{len(prompts)} ---")
+                print(f"PROMPT: {prompt[:200]}..." if len(prompt) > 200 else f"PROMPT: {prompt}")
+                print(f"RESPONSE: {response[:200]}..." if len(response) > 200 else f"RESPONSE: {response}")
+                print(f"Output tokens: {result['output_token_counts'][i]}")
             
             # Print total tokens
             total_output_tokens = sum(result["output_token_counts"])
-            print(f"Total output tokens: {total_output_tokens}")
+            print(f"\nTotal output tokens across all responses: {total_output_tokens}")
         
         print(f"Request successful")
         
@@ -352,10 +369,6 @@ try:
         model_dir = os.path.join(results_dir, model_short_name)
         os.makedirs(model_dir, exist_ok=True)
         
-        # Create a directory for detailed results for this model
-        model_detailed_dir = os.path.join(model_dir, "detailed_results")
-        os.makedirs(model_detailed_dir, exist_ok=True)
-        
         # Initialize results dictionary for this model
         final_results = {}
         
@@ -366,14 +379,21 @@ try:
             # all_prompts = load_prompts_from_json(config["path"])
 
             # Make sure we have enough unique prompts for all runs
-            required_prompts = BATCH_SIZE * NUM_RUNS_PER_BATCH
+            required_prompts = BATCH_SIZE * NUM_RUNS_PER_BATCH + BATCH_SIZE # +BATCH_SIZE for warm-up
             if len(all_prompts) < required_prompts:
                 print(f"WARNING: Not enough prompts for {NUM_RUNS_PER_BATCH} runs with batch size {BATCH_SIZE}.")
                 print(f"Need {required_prompts} prompts, but only have {len(all_prompts)}.")
-                print("Will repeat prompts which may cause caching effects.")
-                # Extend the prompts list by repeating if needed
-                while len(all_prompts) < required_prompts:
-                    all_prompts.extend(all_prompts[:required_prompts - len(all_prompts)])
+                
+                # Handle special case when we have just one prompt
+                if len(all_prompts) == 1:
+                    print(f"Only one prompt found. Using the same prompt for all {NUM_RUNS_PER_BATCH} runs.")
+                    single_prompt = all_prompts[0]
+                    all_prompts = [single_prompt] * required_prompts
+                else:
+                    print("Will repeat prompts which may cause caching effects.")
+                    # Extend the prompts list by repeating if needed
+                    while len(all_prompts) < required_prompts:
+                        all_prompts.extend(all_prompts[:required_prompts - len(all_prompts)])
             
             # Calculate actual average token count for all batches
             if len(all_prompts) > 0:
@@ -384,6 +404,10 @@ try:
                 prompt_set_key = "unknown_tokens"
             
             print(f"\n{'='*15} Testing prompt set {prompt_set_key} {'='*15}")
+            
+            # Create a directory for this prompt set 
+            prompt_set_dir = os.path.join(model_dir, prompt_set_key)
+            os.makedirs(prompt_set_dir, exist_ok=True)
             
             # Initialize results for this prompt set
             if prompt_set_key not in final_results:
@@ -423,29 +447,29 @@ try:
                 if not metrics_zeroed:
                     print("WARNING: Initial metrics are not zero. Server may have residual data.")
                 
-                # # Add single warm-up run before starting measurements
-                # print(f"\n{'-'*10} Performing GPU warm-up {'-'*10}")
-                # # Use the first batch of prompts for warm-up
-                # warmup_prompts = all_prompts[:BATCH_SIZE]
-                # print(f"Using first {len(warmup_prompts)} prompts for warm-up")
+                # Add single warm-up run before starting measurements
+                print(f"\n{'-'*10} Performing GPU warm-up {'-'*10}")
+                # Use the first batch of prompts for warm-up
+                warmup_prompts = all_prompts[:BATCH_SIZE]
+                print(f"Using first {len(warmup_prompts)} prompts for warm-up")
 
-                # # Single warm-up run to initialize GPU and compile any needed kernels
-                # print("Executing warm-up run...")
-                # warm_up_result = send_single_request(warmup_prompts, model_name, GENERATION_PARAMS)
-                # if not warm_up_result["success"]:
-                #     print(f"WARNING: Warm-up request failed: {warm_up_result.get('error', 'Unknown error')}")
-                # else:
-                #     print("Warm-up request completed successfully")
+                # Single warm-up run to initialize GPU and compile any needed kernels
+                print("Executing warm-up run...")
+                warm_up_result = send_single_request(warmup_prompts, model_name, GENERATION_PARAMS)
+                if not warm_up_result["success"]:
+                    print(f"WARNING: Warm-up request failed: {warm_up_result.get('error', 'Unknown error')}")
+                else:
+                    print("Warm-up request completed successfully")
 
-                # # Allow system to stabilize after warm-up
-                # print("Waiting for system to stabilize...")
-                # time.sleep(5)  
+                # Allow system to stabilize after warm-up
+                print("Waiting for system to stabilize...")
+                time.sleep(5)  
 
-                # # Get clean baseline metrics AFTER warm-up
-                # print("Getting clean baseline metrics after warm-up...")
+                # Get clean baseline metrics AFTER warm-up
+                print("Getting clean baseline metrics after warm-up...")
                 baseline_metrics = scrape_and_parse_metrics(TARGET_METRIC_NAMES)
 
-                # print(f"{'-'*10} Warm-up complete, starting actual measurements {'-'*10}")
+                print(f"{'-'*10} Warm-up complete, starting actual measurements {'-'*10}")
 
                 # Adjust the starting index for actual runs to skip warm-up prompts
                 # Start using prompts after the first BATCH_SIZE used for warm-up
@@ -529,21 +553,19 @@ try:
                             batch_detail["metrics"][name] = None
                             print(f"  {name}: N/A (no count increase)")
                     
-                    # Calculate Time Between Tokens (TBT)
+                    # Calculate Time Between Tokens (TBT) using vllm:generation_tokens_total
                     if "vllm:request_decode_time_seconds" in batch_metrics and batch_metrics["vllm:request_decode_time_seconds"] is not None:
-                        # Get total output tokens for this batch
-                        total_output_tokens = sum(request_result.get("output_token_counts", [0]))
+                        # Get tokens directly from your API response
+                        output_tokens = request_result.get("output_token_counts", [0])[0]
                         
-                        # Avoid division by zero
-                        if total_output_tokens > 0:
-                            # TBT = decode time / number of tokens
-                            time_between_tokens = batch_metrics["vllm:request_decode_time_seconds"] / total_output_tokens
+                        if output_tokens > 0:
+                            time_between_tokens = batch_metrics["vllm:request_decode_time_seconds"] / output_tokens
                             batch_metrics["time_between_tokens"] = time_between_tokens
                             batch_detail["metrics"]["time_between_tokens"] = time_between_tokens
-                            print(f"  time_between_tokens: {time_between_tokens:.6f}s")
+                            print(f"  time_between_tokens: {time_between_tokens:.6f}s (based on {output_tokens} tokens from response)")
                             all_tbts.append(time_between_tokens)
                         else:
-                            print("  time_between_tokens: N/A (no output tokens)")
+                            print("  time_between_tokens: N/A (no generated tokens according to response)")
                             batch_metrics["time_between_tokens"] = None
                             batch_detail["metrics"]["time_between_tokens"] = None
                     else:
@@ -599,8 +621,9 @@ try:
                     "requests": all_request_details
                 }
 
-                # Save to model-specific detailed directory
-                detailed_json_path = os.path.join(model_detailed_dir, f"{prompt_set_key}_chunk{chunk_size}.json")
+                # Save to prompt-specific directory with a cleaner filename
+                chunk_json_filename = f"chunk_size_{chunk_size}.json"
+                detailed_json_path = os.path.join(prompt_set_dir, chunk_json_filename)
                 try:
                     with open(detailed_json_path, 'w') as f:
                         json.dump(detailed_results, f, indent=2)
@@ -610,6 +633,22 @@ try:
                 
                 print(f"Finished testing chunk_size = {chunk_size} with {prompt_set_key}. Waiting before next run...")
                 time.sleep(10)  # Wait before next iteration
+
+            # Save individual results JSON for this prompt set right after processing it
+            # Create a single-prompt results dictionary
+            prompt_results = {prompt_set_key: final_results[prompt_set_key]}
+            
+            # Save prompt-specific results JSON
+            prompt_json_path = os.path.join(prompt_set_dir, f"chunk_size_results.json")
+            
+            try:
+                with open(prompt_json_path, 'w') as f:
+                    json.dump(prompt_results, f, indent=2)
+                print(f"Prompt-specific results saved to: {prompt_json_path}")
+            except Exception as e:
+                print(f"Error saving prompt-specific results for {prompt_set_key}: {e}")
+            
+            print(f"Finished processing prompt set {prompt_set_key}.")
 
         # Save and plot results for this model
         # Pretty print summarized results
@@ -627,10 +666,18 @@ try:
 
         # Create plot from the results
         try:
+            # Plot end-to-end time metrics
             plot_e2e_time_chart_from_json(results_json_path, model_dir, model_short_name)
-            print(f"Plot created in {model_dir}")
+            
+            # Also plot TTFT metrics
+            plot_ttft_time_chart_from_json(results_json_path, model_dir, model_short_name)
+            
+            # And plot TBT metrics if they exist
+            plot_tbt_time_chart_from_json(results_json_path, model_dir, model_short_name)
+            
+            print(f"Plots created in {model_dir}")
         except Exception as e:
-            print(f"Error creating plot: {e}")
+            print(f"Error creating plots: {e}")
 
 except KeyboardInterrupt:
     print("\nExperiment interrupted by user.")

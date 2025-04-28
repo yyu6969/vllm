@@ -1,0 +1,74 @@
+{
+  "experiment_info": {
+    "prompt_set": "avg_prompt_tokens_7799",
+    "chunk_size": 32,
+    "model": "meta-llama/Meta-Llama-3-8B-Instruct",
+    "generation_params": {
+      "max_tokens": 256,
+      "temperature": 0.0,
+      "top_p": 1.0
+    }
+  },
+  "requests": [
+    {
+      "run_index": 0,
+      "batch_size": 1,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 8.118825912475586,
+        "vllm:request_prefill_time_seconds": 4.398044473000482,
+        "vllm:request_decode_time_seconds": 3.7189084909987287,
+        "vllm:request_inference_time_seconds": 8.11695296399921,
+        "time_between_tokens": 0.01447046105446976
+      }
+    },
+    {
+      "run_index": 1,
+      "batch_size": 1,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 8.115561485290527,
+        "vllm:request_prefill_time_seconds": 4.398579022999911,
+        "vllm:request_decode_time_seconds": 3.712445528999524,
+        "vllm:request_inference_time_seconds": 8.111024551999435,
+        "time_between_tokens": 0.0144453133424106
+      }
+    },
+    {
+      "run_index": 2,
+      "batch_size": 1,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 8.10585331916809,
+        "vllm:request_prefill_time_seconds": 4.390957032999722,
+        "vllm:request_decode_time_seconds": 3.713162169999123,
+        "vllm:request_inference_time_seconds": 8.104119202998845,
+        "time_between_tokens": 0.01444810182879036
+      }
+    },
+    {
+      "run_index": 3,
+      "batch_size": 1,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 8.113002300262451,
+        "vllm:request_prefill_time_seconds": 4.397570817000087,
+        "vllm:request_decode_time_seconds": 3.7139134549979644,
+        "vllm:request_inference_time_seconds": 8.111484271998052,
+        "time_between_tokens": 0.014451025116723597
+      }
+    },
+    {
+      "run_index": 4,
+      "batch_size": 1,
+      "success": true,
+      "metrics": {
+        "vllm:e2e_request_latency_seconds": 8.10883355140686,
+        "vllm:request_prefill_time_seconds": 4.395645315002184,
+        "vllm:request_decode_time_seconds": 3.7117771679986618,
+        "vllm:request_inference_time_seconds": 8.107422483000846,
+        "time_between_tokens": 0.014442712715948101
+      }
+    }
+  ]
+}

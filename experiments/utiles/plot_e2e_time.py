@@ -14,9 +14,10 @@ def plot_e2e_time_chart(all_results: List[List[Dict]], output_dir: str):
     
     # Colors and markers for different prompts
     styles = [
-        {'color': 'blue', 'marker': 'o', 'label': 'Prompt 1'},
-        {'color': 'green', 'marker': 's', 'label': 'Prompt 2'},
-        {'color': 'red', 'marker': '^', 'label': 'Prompt 3'}
+        {'color': 'blue', 'marker': 'o', 'label': 'Sequence token length:'},
+        {'color': 'green', 'marker': 's', 'label': 'Sequence token length:'},
+        {'color': 'red', 'marker': '^', 'label': 'Sequence token length:'},
+        {'color': 'orange', 'marker': 'D', 'label': 'Sequence token length:'},
     ]
     
     # Get all unique chunk sizes and create evenly spaced x positions
@@ -53,7 +54,7 @@ def plot_e2e_time_chart(all_results: List[List[Dict]], output_dir: str):
                 linestyle='-',
                 linewidth=2,
                 markersize=8,
-                label=f'{styles[idx]["label"]} (avg {avg_prompt_tokens:.1f} tokens)')
+                label=f'{styles[idx]["label"]} (avg {avg_prompt_tokens})')
         
         # Add value annotations
         for x, y, chunk_size in zip(x_vals, sorted_e2e_times, sorted_chunk_sizes):
@@ -172,9 +173,10 @@ def plot_e2e_time_chart_from_json(json_file_path: str, output_dir: str = None, m
     
     # Colors and markers for different prompts - updated for clarity
     styles = [
-        {'color': 'blue', 'marker': 'o', 'label': 'Prompt 1'},
-        {'color': 'green', 'marker': 's', 'label': 'Prompt 2'},
-        {'color': 'red', 'marker': '^', 'label': 'Prompt 3'}
+        {'color': 'blue', 'marker': 'o', 'label': 'Sequence token length:'},
+        {'color': 'green', 'marker': 's', 'label': 'Sequence token length:'},
+        {'color': 'red', 'marker': '^', 'label': 'Sequence token length:'},
+        {'color': 'orange', 'marker': 'D', 'label': 'Sequence token length:'},
     ]
     
     # Process data from JSON structure
@@ -242,7 +244,7 @@ def plot_e2e_time_chart_from_json(json_file_path: str, output_dir: str = None, m
                 linestyle='-',
                 linewidth=2,
                 markersize=8,
-                label=f'{styles[idx]["label"]} ({avg_prompt_tokens} tokens)')
+                label=f'{styles[idx]["label"]} {avg_prompt_tokens} tokens')
         
         # Add value annotations
         for x, y, chunk_size in zip(x_vals, sorted_e2e_times, sorted_chunk_sizes):
@@ -275,6 +277,272 @@ def plot_e2e_time_chart_from_json(json_file_path: str, output_dir: str = None, m
         e2e_plot_path = f"{output_dir}/combined_chunk_size_vs_e2e_time.png"
         plt.savefig(e2e_plot_path, dpi=300, bbox_inches='tight')
         print(f"Combined E2E time plot saved to {e2e_plot_path}")
+    else:
+        plt.show()
+    
+    plt.close()
+
+def plot_ttft_time_chart_from_json(json_file_path: str, output_dir: str = None, model_name: str = ""):
+    """
+    Plot Time To First Token (TTFT) metrics from a JSON file with different prompt lengths.
+    
+    Args:
+        json_file_path: Path to the JSON file containing TTFT metrics
+        output_dir: Directory to save the plot
+        model_name: Model name to include in the plot title
+    """
+    # Load data from JSON file
+    with open(json_file_path, 'r') as f:
+        data = json.load(f)
+    
+    # Plot combined TTFT chart
+    plt.figure(figsize=(12, 8))
+    
+    # Colors and markers for different prompts
+    styles = [
+        {'color': 'blue', 'marker': 'o', 'label': 'Sequence token length:'},
+        {'color': 'green', 'marker': 's', 'label': 'Sequence token length:'},
+        {'color': 'red', 'marker': '^', 'label': 'Sequence token length:'},
+        {'color': 'orange', 'marker': 'D', 'label': 'Sequence token length:'},
+    ]
+    
+    # Process data from JSON structure
+    all_chunk_sizes = set()
+    prompt_results = []
+    
+    # Extract data from JSON
+    for i, (prompt_key, prompt_data) in enumerate(data.items()):
+        # Extract prompt tokens from the key (format: avg_prompt_tokens_XXX)
+        prompt_tokens = int(prompt_key.split('_')[-1])
+        
+        results = []
+        for chunk_key, metrics in prompt_data.items():
+            # Extract chunk size from key (format: chunk_size_XXX)
+            chunk_size = int(chunk_key.split('_')[-1])
+            all_chunk_sizes.add(chunk_size)
+            
+            # Skip any entries with status='failed_startup' or error messages
+            if isinstance(metrics, dict) and metrics.get('status') == 'failed_startup':
+                continue
+            if isinstance(metrics, dict) and 'error' in metrics:
+                continue
+                
+            result = {
+                "chunk_size": chunk_size,
+                "avg_prefill_time": metrics["avg_prefill_time"],
+                "avg_prompt_tokens": prompt_tokens
+            }
+            results.append(result)
+        
+        prompt_results.append(results)
+    
+    # Sort chunk sizes for the x-axis
+    all_chunk_sizes = sorted(list(all_chunk_sizes))
+    
+    # Create evenly spaced x positions for plotting
+    x_positions = np.arange(len(all_chunk_sizes))
+    
+    # Create mapping from chunk size to x position
+    chunk_size_to_pos = {size: pos for pos, size in zip(x_positions, all_chunk_sizes)}
+    
+    # Plot each prompt's results
+    for idx, results in enumerate(prompt_results):
+        if idx >= len(styles):
+            break  # Skip if we don't have a style defined
+            
+        chunk_sizes = [result["chunk_size"] for result in results]
+        avg_ttft_times = [result["avg_prefill_time"] for result in results]
+        avg_prompt_tokens = results[0]["avg_prompt_tokens"]
+        
+        # Sort by chunk size
+        sorted_indices = np.argsort(chunk_sizes)
+        sorted_chunk_sizes = [chunk_sizes[i] for i in sorted_indices]
+        sorted_ttft_times = [avg_ttft_times[i] for i in sorted_indices]
+        
+        # Convert chunk sizes to x positions
+        x_vals = [chunk_size_to_pos[size] for size in sorted_chunk_sizes]
+        
+        # Plot with different style for each prompt
+        plt.plot(x_vals, sorted_ttft_times, 
+                marker=styles[idx]['marker'], 
+                color=styles[idx]['color'],
+                linestyle='-',
+                linewidth=2,
+                markersize=8,
+                label=f'{styles[idx]["label"]} {avg_prompt_tokens} tokens')
+        
+        # Add value annotations
+        for x, y, chunk_size in zip(x_vals, sorted_ttft_times, sorted_chunk_sizes):
+            plt.annotate(f"{y:.2f}s", 
+                        (x, y),
+                        textcoords="offset points",
+                        xytext=(0, 10),
+                        ha='center',
+                        color=styles[idx]['color'],
+                        fontsize=8)
+    
+    # Set x-axis ticks to show all chunk sizes
+    plt.xticks(x_positions, all_chunk_sizes)
+    
+    plt.xlabel('Chunk Size')
+    plt.ylabel('Time to First Token (s)')
+    title = 'Chunk Size vs Time to First Token (TTFT)\nComparison of Different Prompt Lengths'
+    if model_name:
+        title += f" ({model_name})"
+    plt.title(title)
+    plt.grid(True)
+    plt.legend()
+    
+    # Adjust layout to prevent label cutoff
+    plt.tight_layout()
+    
+    # Save plot if output_dir is provided
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
+        ttft_plot_path = f"{output_dir}/combined_chunk_size_vs_ttft.png"
+        plt.savefig(ttft_plot_path, dpi=300, bbox_inches='tight')
+        print(f"Combined TTFT plot saved to {ttft_plot_path}")
+    else:
+        plt.show()
+    
+    plt.close()
+
+def plot_tbt_time_chart_from_json(json_file_path: str, output_dir: str = None, model_name: str = ""):
+    """
+    Plot Time Between Tokens (TBT) metrics from a JSON file with different prompt lengths.
+    
+    Args:
+        json_file_path: Path to the JSON file containing TBT metrics
+        output_dir: Directory to save the plot
+        model_name: Model name to include in the plot title
+    """
+    # Load data from JSON file
+    with open(json_file_path, 'r') as f:
+        data = json.load(f)
+    
+    # Plot combined TBT chart
+    plt.figure(figsize=(12, 8))
+    
+    # Colors and markers for different prompts
+    styles = [
+        {'color': 'blue', 'marker': 'o', 'label': 'Sequence token length:'},
+        {'color': 'green', 'marker': 's', 'label': 'Sequence token length:'},
+        {'color': 'red', 'marker': '^', 'label': 'Sequence token length:'},
+        {'color': 'orange', 'marker': 'D', 'label': 'Sequence token length:'},
+    ]
+    
+    # Process data from JSON structure
+    all_chunk_sizes = set()
+    prompt_results = []
+    
+    # Extract data from JSON
+    for i, (prompt_key, prompt_data) in enumerate(data.items()):
+        # Extract prompt tokens from the key (format: avg_prompt_tokens_XXX)
+        prompt_tokens = int(prompt_key.split('_')[-1])
+        
+        results = []
+        for chunk_key, metrics in prompt_data.items():
+            # Extract chunk size from key (format: chunk_size_XXX)
+            chunk_size = int(chunk_key.split('_')[-1])
+            all_chunk_sizes.add(chunk_size)
+            
+            # Skip any entries with status='failed_startup' or error messages
+            if isinstance(metrics, dict) and metrics.get('status') == 'failed_startup':
+                continue
+            if isinstance(metrics, dict) and 'error' in metrics:
+                continue
+            
+            # Check if the TBT metric exists with either name
+            tbt_value = None
+            if "avg_time_between_tokens" in metrics:
+                tbt_value = metrics["avg_time_between_tokens"]
+            
+            # Skip if TBT value is not found
+            if tbt_value is None:
+                continue
+                
+            result = {
+                "chunk_size": chunk_size,
+                "avg_time_between_tokens": tbt_value,
+                "avg_prompt_tokens": prompt_tokens
+            }
+            results.append(result)
+        
+        # Only add if we have results
+        if results:
+            prompt_results.append(results)
+    
+    # Check if we have any valid TBT data
+    if not prompt_results:
+        print("No Time Between Tokens (TBT) data found in the JSON file.")
+        return
+    
+    # Sort chunk sizes for the x-axis
+    all_chunk_sizes = sorted(list(all_chunk_sizes))
+    
+    # Create evenly spaced x positions for plotting
+    x_positions = np.arange(len(all_chunk_sizes))
+    
+    # Create mapping from chunk size to x position
+    chunk_size_to_pos = {size: pos for pos, size in zip(x_positions, all_chunk_sizes)}
+    
+    # Plot each prompt's results
+    for idx, results in enumerate(prompt_results):
+        if idx >= len(styles):
+            break  # Skip if we don't have a style defined
+            
+        chunk_sizes = [result["chunk_size"] for result in results]
+        avg_tbt_times = [result["avg_time_between_tokens"] for result in results]
+        avg_prompt_tokens = results[0]["avg_prompt_tokens"]
+        
+        # Sort by chunk size
+        sorted_indices = np.argsort(chunk_sizes)
+        sorted_chunk_sizes = [chunk_sizes[i] for i in sorted_indices]
+        sorted_tbt_times = [avg_tbt_times[i] for i in sorted_indices]
+        
+        # Convert chunk sizes to x positions
+        x_vals = [chunk_size_to_pos[size] for size in sorted_chunk_sizes]
+        
+        # Plot with different style for each prompt
+        plt.plot(x_vals, sorted_tbt_times, 
+                marker=styles[idx]['marker'], 
+                color=styles[idx]['color'],
+                linestyle='-',
+                linewidth=2,
+                markersize=8,
+                label=f'{styles[idx]["label"]} {avg_prompt_tokens} tokens')
+        
+        # Add value annotations
+        for x, y, chunk_size in zip(x_vals, sorted_tbt_times, sorted_chunk_sizes):
+            plt.annotate(f"{y:.4f}s", 
+                        (x, y),
+                        textcoords="offset points",
+                        xytext=(0, 10),
+                        ha='center',
+                        color=styles[idx]['color'],
+                        fontsize=8)
+    
+    # Set x-axis ticks to show all chunk sizes
+    plt.xticks(x_positions, all_chunk_sizes)
+    
+    plt.xlabel('Chunk Size')
+    plt.ylabel('Time Between Tokens (s)')
+    title = 'Chunk Size vs Time Between Tokens (TBT)\nComparison of Different Prompt Lengths'
+    if model_name:
+        title += f" ({model_name})"
+    plt.title(title)
+    plt.grid(True)
+    plt.legend()
+    
+    # Adjust layout to prevent label cutoff
+    plt.tight_layout()
+    
+    # Save plot if output_dir is provided
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
+        tbt_plot_path = f"{output_dir}/combined_chunk_size_vs_tbt.png"
+        plt.savefig(tbt_plot_path, dpi=300, bbox_inches='tight')
+        print(f"Combined TBT plot saved to {tbt_plot_path}")
     else:
         plt.show()
     

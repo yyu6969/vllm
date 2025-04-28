@@ -1,0 +1,60 @@
+{
+  "avg_prompt_tokens_4000": {
+    "chunk_size_32": {
+      "avg_e2e_time": 10.355606603622437,
+      "avg_prefill_time": 3.6124080628156663,
+      "avg_decode_time": 6.741900223493576,
+      "avg_inference_time": 10.354308286309243,
+      "avg_time_between_tokens": 0.02633554774802178
+    },
+    "chunk_size_64": {
+      "avg_e2e_time": 8.602519178390503,
+      "avg_prefill_time": 1.8628321077674628,
+      "avg_decode_time": 6.738350757025183,
+      "avg_inference_time": 8.601182864792644,
+      "avg_time_between_tokens": 0.02632168264462962
+    },
+    "chunk_size_128": {
+      "avg_e2e_time": 7.7856823921203615,
+      "avg_prefill_time": 1.0332339905202388,
+      "avg_decode_time": 6.751041935198009,
+      "avg_inference_time": 7.784275925718248,
+      "avg_time_between_tokens": 0.02637125755936722
+    },
+    "chunk_size_256": {
+      "avg_e2e_time": 7.424516201019287,
+      "avg_prefill_time": 0.6809095745906234,
+      "avg_decode_time": 6.7424702774733305,
+      "avg_inference_time": 7.423379852063954,
+      "avg_time_between_tokens": 0.026337774521380197
+    },
+    "chunk_size_512": {
+      "avg_e2e_time": 7.340351009368897,
+      "avg_prefill_time": 0.602586436457932,
+      "avg_decode_time": 6.736740565672517,
+      "avg_inference_time": 7.339327002130449,
+      "avg_time_between_tokens": 0.02631539283465827
+    },
+    "chunk_size_1024": {
+      "avg_e2e_time": 7.291340351104736,
+      "avg_prefill_time": 0.5573185974732041,
+      "avg_decode_time": 6.732951577752829,
+      "avg_inference_time": 7.290270175226032,
+      "avg_time_between_tokens": 0.026300592100596987
+    },
+    "chunk_size_2048": {
+      "avg_e2e_time": 7.252223348617553,
+      "avg_prefill_time": 0.5166420973837376,
+      "avg_decode_time": 6.734425331838429,
+      "avg_inference_time": 7.251067429222166,
+      "avg_time_between_tokens": 0.026306348952493862
+    },
+    "chunk_size_4096": {
+      "avg_e2e_time": 7.2582635402679445,
+      "avg_prefill_time": 0.5133106490597129,
+      "avg_decode_time": 6.743627667240799,
+      "avg_inference_time": 7.256938316300511,
+      "avg_time_between_tokens": 0.02634229557515937
+    }
+  }
+}
